@@ -1,0 +1,7 @@
+pymongo
+couchdb
+crate
+https://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-1.0.12.tar.gz
+psycopg2
+plotly
+ijson
