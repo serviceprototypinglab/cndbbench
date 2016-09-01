@@ -1,0 +1,17 @@
+version: '2'
+services:
+  crate:
+    image: crate
+    ports:
+      - "4200:4200"
+    mem_limit: 100m
+  benchmark:
+    container_name: benchmark
+    image: benchmark
+    volumes:
+      - ./sharedData:/sharedData
+      - ./results:/results
+    depends_on:
+      - crate
+    links:
+      - crate

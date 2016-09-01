@@ -17,9 +17,7 @@ host_cluster_crate_1 = data['host_cluster_crate_1']
 host_cluster_crate_2 = data['host_cluster_crate_2']
 host_cluster_crate_3 = data['host_cluster_crate_3']
 host_cluster_crate_4 = data['host_cluster_crate_4']
-
 host_no_cluster_crate = data['host_no_cluster_crate']
-
 coll = data['coll']
 
 

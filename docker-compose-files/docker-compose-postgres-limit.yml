@@ -1,0 +1,21 @@
+version: '2'
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    mem_limit: 100m
+  benchmark:
+    container_name: benchmark
+    image: benchmark
+    volumes:
+      - ./sharedData:/sharedData
+      - ./results:/results
+    depends_on:
+      - postgres
+    links:
+      - postgres

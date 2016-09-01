@@ -1,0 +1,17 @@
+version: '2'
+services:
+  couchdb:
+    image: couchdb
+    ports:
+      - "5984:5984"
+    mem_limit: 100m
+  benchmark:
+    container_name: benchmark
+    image: benchmark
+    volumes:
+      - ./sharedData:/sharedData
+      - ./results:/results
+    depends_on:
+      - couchdb
+    links:
+      - couchdb

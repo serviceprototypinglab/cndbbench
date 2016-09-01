@@ -1,0 +1,4 @@
+{"crate": {"example": "CREATE TABLE example (index int, age int, name string)"},
+"postgres": {"example": "CREATE TABLE example (index INT, age INT, name TEXT)"},
+"mysql": {"example": "CREATE TABLE example (index INT, age INT, name TEXT)"},
+"general": {"example": "CREATE TABLE example (index INT, age INT, name TEXT)"}}

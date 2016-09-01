@@ -1,0 +1,21 @@
+version: '2'
+services:
+  mysql:
+    image: mysql_maxallowedpacket
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+  benchmark:
+    container_name: benchmark
+    image: benchmark
+    volumes:
+      - ./sharedData:/sharedData
+      - ./results:/results
+    depends_on:
+      - mysql
+    links:
+      - mysql

@@ -1,0 +1,16 @@
+version: '2'
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+  benchmark:
+    container_name: benchmark
+    image: benchmark
+    volumes:
+      - ./sharedData:/sharedData
+      - ./results:/results
+    depends_on:
+      - mongo
+    links:
+      - mongo

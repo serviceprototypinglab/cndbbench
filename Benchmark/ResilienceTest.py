@@ -104,7 +104,7 @@ def mongo_test(name_collection, name_test, type_insert, type_test):
     mongo.create_collection(database, name_collection)
 
     # GET DATA TO INSERT
-    json_data = read_data('sharedData', 'table_name')
+    json_data = read_data('sharedData', 'BlobStore')
     count = 0
 
     # INSERT FIRST 1000
@@ -272,7 +272,7 @@ def couch_test(name_collection, name_test, type_insert, type_test):
     # couch.create_collection(database, name_collection)
 
     # GET DATA TO INSERT
-    json_data = read_data('sharedData', 'table_name')
+    json_data = read_data('sharedData', 'BlobStore')
     count = 0
 
     # INSERT FIRST 1000
@@ -354,24 +354,24 @@ def couch_disk_size_test1():
     # CONNECT
     conn = couch.create_connexion(host_resilience_couch, port_resilience_couch)
     try:
-        conn.delete('table_name')
+        conn.delete('BlobStore')
     except Exception, e:
         print e
         print "problem delete couch"
     # GET OR CREATE DATABASE
-    couch.create_database(conn, 'table_name')
+    couch.create_database(conn, 'BlobStore')
 
     # CREATE COLLECTION
     # couch.create_collection(database, name_collection)
 
     # GET DATA TO INSERT
-    json_data = read_data('sharedData', 'dbo.table_name')
+    json_data = read_data('sharedData', 'dbo.BlobStore')
     count = 0
     while True:
         try:
             for j in json_data:
                 try:
-                    couch.insert_one_data(conn['table_name'], j)
+                    couch.insert_one_data(conn['BlobStore'], j)
                     count += 1
                     print count
                 except Exception, e:
@@ -394,7 +394,7 @@ def couch_disk_size_test1():
 
 
 def couch_disk_size_test2():
-    name_collection = 'table_name'
+    name_collection = 'BlobStore'
     name_test = 'couch_size_disk'
     couch_check_data(name_collection, name_test)
 
@@ -482,17 +482,17 @@ def sql_test(name_test, type_insert, type_test, commit, db):
     # GET OR CREATE DATABASE
     # CLEAN DATABASE
     try:
-        delete_table(cursor, 'table_name')
+        delete_table(cursor, 'BlobStore')
     except Exception, e:
         print e
         print "problem connect sql"
 
     # CREATE TABLE
     queries_create = read_data('sharedData', "creates")
-    database.create_table(cursor, queries_create[db]['table_name'])
+    database.create_table(cursor, queries_create[db]['BlobStore'])
 
     # GET DATA TO INSERT
-    aux_data = read_data('sharedData', 'table_name')
+    aux_data = read_data('sharedData', 'BlobStore')
     json_data = []
     for j in aux_data:
         j['ZBlob'] = j['ZBlob'].encode('unicode_escape')
@@ -504,7 +504,7 @@ def sql_test(name_test, type_insert, type_test, commit, db):
     time_1000_start = time.time()
     if db == 'crate':
         json_example = json_data[0]
-        query_insert = 'INSERT INTO table_name ('
+        query_insert = 'INSERT INTO BlobStore ('
         for k in json_example:
             query_insert += k + ","
         query_insert = query_insert[:len(query_insert) - 1] + ") " + "VALUES ("
@@ -523,7 +523,7 @@ def sql_test(name_test, type_insert, type_test, commit, db):
             count += 1
     else:
         queries_insert = read_data('sharedData', 'inserts')
-        query_insert = queries_insert[db]['table_name']
+        query_insert = queries_insert[db]['BlobStore']
         for j in first_1000:
             database.insert_one_data(cursor, query_insert, j)
             conn.commit()
@@ -541,7 +541,7 @@ def sql_test(name_test, type_insert, type_test, commit, db):
     print delay
     print "--------------------------------------------------------"
     try:
-        r = database.get_all_data(cursor, 'table_name')
+        r = database.get_all_data(cursor, 'BlobStore')
         count = len(r)
         print count
     except Exception, e:
@@ -653,7 +653,7 @@ def sql_check_data(name_test, db):
 
     # GET COUNT AND GET REAL COUNT
     try:
-        r = database.get_all_data(cursor, 'table_name')
+        r = database.get_all_data(cursor, 'BlobStore')
         real_count = len(r)
         print real_count
         count = get_count(name_test)
@@ -694,17 +694,17 @@ def sql_disk_size_test1(db):
                                          string_connect="")
     cursor = conn.cursor()
     try:
-        delete_table(cursor, 'table_name')
+        delete_table(cursor, 'BlobStore')
     except Exception, e:
         print e
         print "problem connect sql"
 
         # CREATE TABLE
     queries_create = read_data('sharedData', "creates")
-    database.create_table(cursor, queries_create[db]['table_name'])
+    database.create_table(cursor, queries_create[db]['BlobStore'])
 
     # GET DATA TO INSERT
-    aux_data = read_data('sharedData', 'table_name')
+    aux_data = read_data('sharedData', 'BlobStore')
     json_data = []
     for j in aux_data:
         j['ZBlob'] = j['ZBlob'].encode('unicode_escape')
@@ -714,7 +714,7 @@ def sql_disk_size_test1(db):
     while True:
         if db == 'crate':
             json_example = json_data[0]
-            query_insert = 'INSERT INTO table_name ('
+            query_insert = 'INSERT INTO BlobStore ('
             for k in json_example:
                 query_insert += k + ","
             query_insert = query_insert[:len(query_insert) - 1] + ") " + "VALUES ("
@@ -739,7 +739,7 @@ def sql_disk_size_test1(db):
 
         else:
             queries_insert = read_data('sharedData', 'inserts')
-            query_insert = queries_insert[db]['table_name']
+            query_insert = queries_insert[db]['BlobStore']
             for j in json_data:
                 try:
                     database.insert_one_data(cursor, query_insert, j)

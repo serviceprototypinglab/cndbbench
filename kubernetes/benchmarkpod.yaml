@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  labels: 
+    name: benchmarkarkis
+  name: benchmarkarkis
+  namespace: arkis
+spec: 
+  containers: 
+    - name: bencharmkarkiscontainer
+      image: chumbo/benchmark
+ 

@@ -1,0 +1,47 @@
+version: '2'
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+  crate:
+    image: crate
+    ports:
+      - "4200:4200"
+  couchdb:
+    image: couchdb
+    ports:
+      - "5984:5984"
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  mysql:
+    image: mysql_maxallowedpacket
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+  benchmark:
+    image: benchmark
+    volumes:
+      - ./sharedData:/sharedData
+    depends_on:
+      - mongo
+      - crate
+      - couchdb
+      - postgres
+      - mysql
+    links:
+      - mongo
+      - crate
+      - couchdb
+      - postgres
+      - mysql
