@@ -495,7 +495,7 @@ class InsertTest:
                 insert_one_data_time = 0
                 for table_name in self.tables:
                     print "inserting one" + table_name
-                    json_data = self.read_data('sharedData', 'dbo.' + table_name)[:100]
+                    json_data = self.read_data('sharedData', table_name)[:100]
                     if json_data:
                         query_insert = queries_insert['postgres'][table_name]
                         insert_one_start = time()
@@ -555,7 +555,7 @@ class InsertTest:
             insert_all_data_time = 0
             for table_name in self.tables:
                 print "inserting all" + table_name
-                json_data = self.read_data('sharedData', 'dbo.' + table_name)
+                json_data = self.read_data('sharedData',  table_name)
                 if json_data:
                     query_insert = queries_insert['postgres'][table_name]
                     insert_all_start = time()
@@ -659,6 +659,7 @@ class InsertTest:
             queries_create = self.read_data('sharedData', "creates")
             create_table_start = time()
             for table in self.tables:
+                print queries_create['mysql'][table]
                 mysqldb.create_table(cursor, queries_create['mysql'][table])
             conn.commit()
             create_table_end = time()

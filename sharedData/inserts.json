@@ -1,4 +1,4 @@
-{"general": {"example": "INSERT INTO example (index, age, name) VALUES ( %s, %s, %s)"},
-"mysql": {"example": "INSERT INTO example (index, age, name) VALUES ( %(index)s, %(age)s, %(name)s )"},
-"postgres": {"example": "INSERT INTO example (index, age, name) VALUES ( %(index)s, %(age)s, %(name)s )"},
-"crate": {"example": "INSERT INTO example (index, age, name) VALUES ( ?, ?, ?)"}}
+{"general": {"example": "INSERT INTO example (exampleid, age, name) VALUES ( %s, %s, %s)"},
+"mysql": {"example": "INSERT INTO example (exampleid, age, name) VALUES ( %(exampleid)s, %(age)s, %(name)s )"},
+"postgres": {"example": "INSERT INTO example (exampleid, age, name) VALUES ( %(exampleid)s, %(age)s, %(name)s )"},
+"crate": {"example": "INSERT INTO example (exampleid, age, name) VALUES ( ?, ?, ?)"}}

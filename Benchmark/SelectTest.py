@@ -104,7 +104,20 @@ class SelectTest:
     # SQL
     @staticmethod
     def aux_selects_crate(cursor):
-        pass
+        query1 = "SELECT * FROM example"
+        query2 = "SELECT * FROM example WHERE exampleid = 1"
+        query3 = "SELECT * FROM example WHERE exampleid > 1000 and exampleid < 10000"
+        cursor.execute(query1)
+        r = cursor.fetchall()
+        print len(r)
+
+        cursor.execute(query2)
+        r = cursor.fetchall()
+        print len(r)
+
+        cursor.execute(query3)
+        r = cursor.fetchall()
+        print len(r)
 
     def selects_sql(self, database_name, cloud, host, name_results, number_of_loops):
         with open('config.json') as data_file:
@@ -112,7 +125,7 @@ class SelectTest:
         if database_name == 'postgres':
             # database = Postgres()
             database = Postgres()
-            conn_string_postgres = data['conn_string_postgres']
+            conn_string_postgres = host
             conn = database.create_connexion(None, None, None, None, conn_string_postgres)
         elif database_name == 'mysql':
             database = Mysqldb()
@@ -147,13 +160,13 @@ class SelectTest:
                                                  database=database_aurora,
                                                  string_connect="")
             else:
-                user_mysql = data['user_mysql']
-                password_mysql = data['password_mysql']
-                database_mysql = data['database_mysql']
-                conn = database.create_connexion(user=user_mysql,
-                                                 password=password_mysql,
+                password = "f87a3844"
+                username = "b88cd1fb83f44d"
+                dbname = 'ad_6e5db755ddea001'
+                conn = database.create_connexion(user=username,
+                                                 password=password,
                                                  host=host,
-                                                 database=database_mysql,
+                                                 database=dbname,
                                                  string_connect="")
         else:
             database = Crate()
@@ -197,8 +210,8 @@ class SelectTest:
         print times
 
     # POSTGRES
-    def selects_postgres(self, host, numbers_of_loop):
-        self.selects_sql('postgres', False, host, 'postgresselects', numbers_of_loop)
+    def selects_postgres(self, string_connect, numbers_of_loop):
+        self.selects_sql('postgres', False, string_connect, 'postgresselects', numbers_of_loop)
 
     # MYSQL
     def selects_mysql(self, host, numbers_of_loop):
