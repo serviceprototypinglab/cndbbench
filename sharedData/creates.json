@@ -1,4 +1,6 @@
-{"crate": {"example": "CREATE TABLE example (exampleid int, age int, name string)"},
-"postgres": {"example": "CREATE TABLE example (exampleid INT, age INT, name TEXT)"},
-"mysql": {"example": "CREATE TABLE example (exampleid INT, age INT, name TEXT)"},
-"general": {"example": "CREATE TABLE example (exampleid INT, age INT, name TEXT)"}}
+{"crate": {"documents": "CREATE TABLE documents (tenant_option string, tenant int, title string, name string, path string, blob string, number int, user int, other_id int)"},
+"postgres": {"documents": "CREATE TABLE documents (tenant_option TEXT, tenant INT, title TEXT, name TEXT, path TEXT, blob TEXT, number INT, user INT, other_id INT)"},
+"mysql": {"documents": "CREATE TABLE documents (tenant_option TEXT, tenant INT, title TEXT, name TEXT, path TEXT, blob TEXT, number INT, user INT, other_id INT)"},
+"general": {"documents": "CREATE TABLE documents (tenant_option TEXT, tenant INT, title TEXT, name TEXT, path TEXT, blob TEXT, number INT, user INT, other_id INT)"}}
+
+
