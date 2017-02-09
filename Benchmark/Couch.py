@@ -1,3 +1,5 @@
+import httplib
+
 import couchdb
 from DocumentDb import DocumentDb
 
@@ -5,7 +7,11 @@ from DocumentDb import DocumentDb
 class Couch(DocumentDb):
     def create_connexion(self, host, port):
         # return couchdb.Server('http://172.17.0.1:5984/')
-        return couchdb.Server(host)
+        if host:
+            return couchdb.Server(host)
+        else:
+            return couchdb.Server()
+        # return httplib.HTTPConnection('localhost', 5984)
 
     def close_connexion(self, connexion, name):
         return connexion.delete(name)

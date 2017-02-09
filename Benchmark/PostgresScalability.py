@@ -1,7 +1,6 @@
 import threading
 import sys
 from Postgres import Postgres
-from SelectTest import SelectTest
 from time import time
 from time import sleep
 import json
@@ -17,10 +16,14 @@ string_connect_postgres_scalability = data['string_connect_postgres_scalability'
 def select_test_1(times):
     p = Postgres()
     conn1 = p.create_connexion(None, None, None, None, string_connect_postgres_scalability)
+    if data['arkisdata'] == 'true':
+        from SelectTestArkisData import SelectTest
+    else:
+        from SelectTest import SelectTest
     s1 = SelectTest()
     cursor1 = conn1.cursor()
     time_start = time()
-    s1.aux_selects_crate(cursor1)
+    s1.aux_selects_sql(cursor1)
     time_end = time()
     res_t = time_end - time_start
     times.append(res_t)

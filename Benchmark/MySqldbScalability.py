@@ -15,7 +15,7 @@ with open('config.json') as data_file:
 
 user = data['user']
 password = data['password']
-host = data['host']
+host = 'localhost'
 database = data['database']
 
 
@@ -26,10 +26,14 @@ def select_test_1(times):
                                    host=host,
                                    database=database,
                                    string_connect="")
+    if data['arkisdata'] == 'true':
+        from SelectTestArkisData import SelectTest
+    else:
+        from SelectTest import SelectTest
     s1 = SelectTest()
     cursor1 = conn1.cursor()
     time_start = time()
-    s1.aux_selects_crate(cursor1)
+    s1.aux_selects_sql(cursor1)
     time_end = time()
     res_t = time_end - time_start
     times.append(res_t)
@@ -51,6 +55,9 @@ def threads_select_test():
     print "-------"
 
 
+# coll = ["IDXProperty76", "IDXProperty78", "PropertyTypes", "BlobStore", "IDXProperty79", "PropertyTypes"]
+# i = InsertTest(coll, coll)
+# i.insert_mysql('localhost',user,password,database,False)
 # threads_select_test()
-# s = SelectTest()
+s = SelectTest()
 # s.selects_mysql('localhost', 100)

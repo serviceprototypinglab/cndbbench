@@ -1,41 +1,77 @@
-# ADD HERE THE TEST THAT YOU WANT DO
-from InsertTest import InsertTest
-from SelectTest import SelectTest
+import pymongo
+from Mongo import Mongo
+import json
 
 
-def insert_bluemix_mysql():
-    coll = ['example']
-    i = InsertTest(coll, coll)
-    host = "us-cdbr-iron-east-04.cleardb.net"
-    password = "f87a3844"
-    username = "b88cd1fb83f44d"
-    dbname = 'ad_6e5db755ddea001'
-    i.insert_mysql(host, username, password, dbname, False)
+class Test:
+    def __init__(self):
+        print "Init test"
 
 
-def insert_bluemix_postgres():
-    coll = ['example']
-    i = InsertTest(coll, coll)
-    string_connect = "host='qdjjtnkv.db.elephantsql.com' port='5432' user='jhyngeej'" \
-                     " password='GwI1AjVT7XBInW0WY2g_IjMXUujfXgdX' dbname='jhyngeej'"
-    i.insert_postgres(string_connect, False)
+    @staticmethod
+    def read_data(folder_name, name):
+        try:
+            with open("/" + folder_name + "/" + name + ".json") as json_file:
+                json_data = json.load(json_file)
+        except Exception, e1:
+            try:
+                with open("../" + folder_name + "/" + name + ".json") as json_file:
+                    json_data = json.load(json_file)
+            except Exception, e:
+                print e1
+                print e
+                print "Error reading 2 " + name
+                json_data = []
+        return json_data
+
+    def i_coll_database_mongo(self, coll, db_name, users):
+        with open('config.json') as data_file:
+            data = json.load(data_file)
+        mongo = Mongo()
+        host = data['host_multitenant']
+        port = int(data['port_multitenant'])
+        db_name = 'arkis'
+        number_tenants = data['number_tenants']
+        if users:
+            conn = mongo.create_connexion(host, port - 1)
+            db = mongo.create_database(conn, db_name)
+            json_data = self.read_data('sharedData', 'arkisEUsers')
+            mongo.insert_all_data(db['users'], json_data)
+        else:
+            for user in range(0, number_tenants):
+                print user
+                conn = mongo.create_connexion(host, port + user)
+                db = mongo.create_database(conn, db_name)
+                # for coll in self.collections:
+                # json_data = self.read_data('sharedData', coll)
+                json_data = self.read_data('sharedData', 'arkisE_E_user_' + str(user))
+                mongo.insert_all_data(db['documents'], json_data)
+
+    def s_mongo(self):
+        print "aaaaaaa"
+
+    def create_full_index(self):
+        with open('config.json') as data_file:
+            data = json.load(data_file)
+        mongo = Mongo()
+        host = data['host_multitenant']
+        port = int(data['port_multitenant'])
+        db_name = 'arkis'
+        number_tenants = data['number_tenants']
+
+        for user in range(0, number_tenants):
+            print user
+            conn = mongo.create_connexion(host, port + user)
+            conn.arkis.documents.create_index([('blob', pymongo.TEXT)])
+            print "created full text index"
 
 
-def selects_bluemix_postgres():
-    s = SelectTest()
-    string_connect = "host='qdjjtnkv.db.elephantsql.com' port='5432' user='jhyngeej'" \
-                     " password='GwI1AjVT7XBInW0WY2g_IjMXUujfXgdX' dbname='jhyngeej'"
-    s.selects_postgres(string_connect, 100)
+t = Test()
+with open('config.json') as data_file:
+    data = json.load(data_file)
+    test_name = data['test_name']
 
-
-def selects_bluemix_mysql():
-    s = SelectTest()
-    host = "us-cdbr-iron-east-04.cleardb.net"
-    s.selects_mysql(host, 100)
-
-
-
-
-# selects_bluemix_postgres()
-# insert_bluemix_mysql()
-selects_bluemix_mysql()
+if test_name == 'select_mongo':
+    t.s_mongo()
+elif test_name == 'insert_mongo':
+    print test_name

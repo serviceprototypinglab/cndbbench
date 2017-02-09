@@ -6,7 +6,10 @@ class Mongo(DocumentDb):
 
     def create_connexion(self, host, port):
         # return MongoClient('mongo', 27017)
-        return MongoClient(host, port)
+        if port:
+            return MongoClient(host, port)
+        else:
+            return MongoClient(host)
 
     def close_connexion(self, connexion, name):
         return connexion.close()

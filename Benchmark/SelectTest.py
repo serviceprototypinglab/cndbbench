@@ -14,69 +14,170 @@ class SelectTest:
         pass
 
     # MONGO
-    @staticmethod
-    def get_number_property(param, db):
-        return db['PropertyTypes'].find_one({"ZIdxGUID": param}, {"ZTableName": 1, "_id": 0})
+    def aux_selects_mongo(self, db, collection, value_eq, value_neq, value_many, value_contains):
+        # Search order number equal
+        time_total_start = time()
+        time_order_number_eq_start = time()
+        r = db[collection].find({"number": value_eq}, cursor_type=CursorType.EXHAUST)
+        time_order_number_eq_end = time()
+        time_order_number_eq = time_order_number_eq_end - time_order_number_eq_start
+        # time_order_number_eq =  cursor.explain()['executionStats']['executionTimeMillis']
 
-    def aux_selects_mongo(self, db):
-        pass
+        # Search order number not equal
+        time_order_number_neq_start = time()
+        r = db[collection].find({"number": {"$ne": value_neq}}, {"other_id": 1, "_id": 0},
+                                cursor_type=CursorType.EXHAUST)
+        print r.count()
+        time_order_number_neq_end = time()
+        time_order_number_neq = time_order_number_neq_end - time_order_number_neq_start
+        # time_order_number_neq = cursor.explain()['executionStats']['executionTimeMillis']
 
-    def selects_mongo(self, host, conn, number_loops):
+        # Search many files
+        time_many_files_start = time()
+        r = db[collection].find({"tenant_option": value_many}, {"other_id": 1, "_id": 0},
+                                cursor_type=CursorType.EXHAUST)
+        print r.count()
+        time_many_files_end = time()
+        time_many_files = time_many_files_end - time_many_files_start
+        # time_many_files = cursor.explain()['executionStats']['executionTimeMillis']
+        # r = query_complex(db)
+        # print len(r)
+        # Search contains
+        time_contains_start = time()
+        r = db[collection].find({"blob": {"$regex": value_contains}}, {"other_id": 1, "_id": 0},
+                                cursor_type=CursorType.EXHAUST)
+        print r.count()
+        time_contains_end = time()
+        time_contains = time_contains_end - time_contains_start
+        # time_contains = cursor.explain()['executionStats']['executionTimeMillis']
+        time_contains_end = time()
+        time_contains = time_contains_end - time_contains_start
+        time_total_end = time()
+        time_total = time_total_end - time_total_start
+        time_results = {'time_order_number_eq': time_order_number_eq,
+                        'time_contains': time_contains,
+                        'time_many_files': time_many_files,
+                        'time_order_number_neq': time_order_number_neq,
+                        'time_total': time_total}
+        return time_results
+
+    def selects_mongo(self, host, port, conn, name_file, number_loops, db, collection, value_eq, value_neq, value_many,
+                      value_contains):
         mongo = Mongo()
-        if conn:
+        if db:
             pass
         else:
-            conn = mongo.create_connexion(host, 27017)
-        db = conn.dbexample
+            if conn:
+                pass
+            else:
+                conn = mongo.create_connexion(host, port)
+            db = conn.dbexample
         times = []
-
+        print "connected"
         for i in range(0, number_loops):
-            time_start = time()
-            self.aux_selects_mongo(db)
-            time_end = time()
-            times.append(time_end - time_start)
+            print "Iteration " + str(i)
+            t = self.aux_selects_mongo(db, collection, value_eq, value_neq, value_many, value_contains)
+            times.append(t)
         print times
+        # todo save the results
         conn.close()
         # Write results postgres
-        # try:
-        #     f = open("/results/queries_mongo.json", "w")
-        #     json.dump(times, f)
-        #     f.close()
-        # except Exception, e:
-        #     print e
-        #     print "error saving results in postgres.json"
-        #
-        # print "----------------------------------------------------------"
-        # print times
+        try:
+            f = open("/results/" + name_file + ".json", "w")
+            json.dump(times, f)
+            f.close()
+        except Exception, e:
+            print e
+            print "error saving results in postgres.json"
+            #
+            # print "----------------------------------------------------------"
+            # print times
 
-        # try:
-        #     time_results = {'times': times}
-        #     mongo.insert_all_data(db['results'], time_results)
-        # except Exception, e:
-        #     print "problen inserting resutls in mongo"
-        #     print e
+            # try:
+            #     time_results = {'times': times}
+            #     mongo.insert_all_data(db['results'], time_results)
+            # except Exception, e:
+            #     print "problen inserting resutls in mongo"
+            #     print e
 
-        # mongo.close_connexion(conn, None)
+            # mongo.close_connexion(conn, None)
 
     # COUCH
-    @staticmethod
-    def get_number_property_couch(param, db):
-        map_fun = "function(doc) { if (doc.ZIdxGUID == '" + param + "') emit(doc.ZTableName, null);}"
-        for row in db.query(map_fun):
-            return row.key.lower()
+    def aux_selects_couch(self, conn, collection, value_eq, value_neq, value_many, value_contains):
+        # Search order number equal
+        print"start"
+        time_total_start = time()
+        time_order_number_eq_start = time()
+        try:
+            map_fun = "function(doc) { if (doc.number == '" + value_eq + "') emit(doc.other_id, null);}"
+            a = conn[collection].query(map_fun)
+            print len(a)
+        except Exception, e:
+            print e
+            print "ErrorCouch1"
+        time_order_number_eq_end = time()
+        time_order_number_eq = time_order_number_eq_end - time_order_number_eq_start
 
-    def aux_selects_couch(self, conn):
-        pass
+        #  search order number not equal
 
-    def selects_couch(self, host, number_loops):
+        time_order_number_neq_start = time()
+
+        try:
+            map_fun = "function(doc) { if (doc.number != '" + value_neq + "') emit(doc.other_id, null);}"
+            r = conn[collection].query(map_fun)
+            print len(r)
+        except Exception, e:
+            print e
+            print "ErrorCouch2"
+        time_order_number_neq_end = time()
+        time_order_number_neq = time_order_number_neq_end - time_order_number_neq_start
+
+        #  search undefined
+        #  search many files
+        time_many_files_start = time()
+
+        try:
+            map_fun = "function(doc) { if (doc.tenant_option == '" + value_many + "') emit(doc.other_id, null);}"
+            s = conn[collection].query(map_fun)
+            print len(s)
+        except Exception, e:
+            print e
+            print "ErrorCouch 3"
+        time_many_files_end = time()
+        time_many_files = time_many_files_end - time_many_files_start
+        #  search complex
+        # r = query_complex(db)
+        # print len(r)
+        #  search contains
+        time_contains_start = time()
+
+        try:
+            map_fun = "function(doc) { var a = doc.blob; var b = '" + value_contains + \
+                      "'; if (a.indexOf(b) !== -1) { emit(doc.other_id, null);}}"
+            c = conn[collection].query(map_fun)
+            print len(c)
+        except Exception, e:
+            print e
+            print "ErrorCouch4"
+        time_contains_end = time()
+        time_contains = time_contains_end - time_contains_start
+        time_total_end = time()
+        time_total = time_total_end - time_total_start
+        time_results = {'time_order_number_eq': time_order_number_eq,
+                        'time_contains': time_contains,
+                        'time_many_files': time_many_files,
+                        'time_order_number_neq': time_order_number_neq,
+                        'time_total': time_total}
+        return time_results
+
+    def selects_couch(self, host, number_loops, collection, value_eq, value_neq, value_many, value_contains):
         couch = Couch()
         conn = couch.create_connexion(host, None)
         times = []
         for i in range(0, number_loops):
-            time_start = time()
-            self.aux_selects_couch(conn)
-            time_end = time()
-            times.append(time_end - time_start)
+            print "Iteration " + str(i)
+            t = self.aux_selects_couch(conn, collection, value_eq, value_neq, value_many, value_contains)
+            times.append(t)
 
         print times
         #  search full text
@@ -103,71 +204,108 @@ class SelectTest:
 
     # SQL
     @staticmethod
-    def aux_selects_crate(cursor):
-        query1 = "SELECT * FROM example"
-        query2 = "SELECT * FROM example WHERE exampleid = 1"
-        query3 = "SELECT * FROM example WHERE exampleid > 1000 and exampleid < 10000"
-        cursor.execute(query1)
-        r = cursor.fetchall()
-        print len(r)
+    def aux_selects_sql(cursor, table_name, value_eq, value_neq, value_many, value_contains):
+        print "start"
+        time_total_start = time()
+        time_order_number_eq_start = time()
+        try:
+            query2 = "SELECT other_id FROM " + table_name + " WHERE number = " + value_eq
+            cursor.execute(query2)
+            r = cursor.fetchall()
+            print len(r)
+        except Exception, e:
+            print e
+            print "error thread 1"
 
-        cursor.execute(query2)
-        r = cursor.fetchall()
-        print len(r)
+        time_order_number_eq_end = time()
+        time_order_number_eq = time_order_number_eq_end - time_order_number_eq_start
 
-        cursor.execute(query3)
-        r = cursor.fetchall()
-        print len(r)
+        #  search order number not equal
+        time_order_number_not_eq_start = time()
 
-    def selects_sql(self, database_name, cloud, host, name_results, number_of_loops):
+        try:
+
+            query4 = "SELECT other_id FROM " + table_name + " WHERE number != " + value_neq + " LIMIT 100000000"
+            cursor.execute(query4)
+            r = cursor.fetchall()
+            print len(r)
+        except Exception, e:
+            print e
+            print "error thread 2"
+
+        time_order_number_not_eq_end = time()
+        time_order_number_not_eq = time_order_number_not_eq_end - time_order_number_not_eq_start
+        #  search undefined
+        #  search many files
+
+        time_many_files_start = time()
+        try:
+            query6 = "SELECT other_id FROM " + table_name + " WHERE tenant_option = '" + value_many + "' LIMIT 10000000"
+            cursor.execute(query6)
+            r = cursor.fetchall()
+            print len(r)
+        except Exception, e:
+            print e
+            print "error thread 3"
+        # print len(r)
+        time_many_files_end = time()
+        time_many_files = time_many_files_end - time_many_files_start
+
+        #  search complex
+        #  search contains
+        time_contains_start = time()
+        try:
+            query8 = "SELECT other_id FROM " + table_name + " WHERE ZValue LIKE '%" + value_contains + "%' LIMIT 100000000"
+            cursor.execute(query8)
+            r = cursor.fetchall()
+            print len(r)
+        except Exception, e:
+            print e
+            print "error thread 4"
+
+        # print len(r)
+        time_contains_end = time()
+        time_contains = time_contains_end - time_contains_start
+        time_total_end = time()
+        time_total = time_total_end - time_total_start
+        time_results = {'time_order_number_eq': time_order_number_eq,
+                        'time_contains': time_contains,
+                        'time_many_files': time_many_files,
+                        'time_order_number_neq': time_order_number_not_eq,
+                        'time_total': time_total}
+        return time_results
+
+    def selects_sql(self, database_name, host, port, user, password, dbname, name_results, number_of_loops, table_name,
+                    value_eq, value_neq, value_many, value_contains):
         with open('config.json') as data_file:
             data = json.load(data_file)
+        print "config file readed"
         if database_name == 'postgres':
-            # database = Postgres()
             database = Postgres()
-            conn_string_postgres = host
+            if host:
+                conn_string_postgres = host
+            else:
+                conn_string_postgres = data['conn_string_postgres']
             conn = database.create_connexion(None, None, None, None, conn_string_postgres)
         elif database_name == 'mysql':
             database = Mysqldb()
-            if cloud == "amazon":
-                host_amazon_mysql = data['host_amazon_mysql']
-                user_amazon_mysql = data['user_amazon_mysql']
-                password_amazon_mysql = data['password_amazon_mysql']
-                dbname_amazon_mysql = data['dbname_amazon_mysql']
-                conn = database.create_connexion(user=user_amazon_mysql,
-                                                 password=password_amazon_mysql,
-                                                 host=host_amazon_mysql,
-                                                 database=dbname_amazon_mysql,
-                                                 string_connect="")
-            elif cloud == "kubernetes":
-                user_kubernetes_mysql = data['user_kubernetes_mysql']
-                password_kubernetes_mysql = data['password_kubernetes_mysql']
-                host_kubernetes_mysql = data['host_kubernetes_mysql']
-                database_kubernetes_mysql = data['database_kubernetes_mysql']
-                conn = database.create_connexion(user=user_kubernetes_mysql,
-                                                 password=password_kubernetes_mysql,
-                                                 host=host_kubernetes_mysql,
-                                                 database=database_kubernetes_mysql,
-                                                 string_connect="")
-            elif cloud == "aurora":
-                user_aurora = data['user_aurora']
-                password_aurora = data['password_aurora']
-                host_aurora = data['host_aurora']
-                database_aurora = data['database_aurora']
-                conn = database.create_connexion(user=user_aurora,
-                                                 password=password_aurora,
-                                                 host=host_aurora,
-                                                 database=database_aurora,
-                                                 string_connect="")
+            if user:
+                user_mysql = user
             else:
-                password = "f87a3844"
-                username = "b88cd1fb83f44d"
-                dbname = 'ad_6e5db755ddea001'
-                conn = database.create_connexion(user=username,
-                                                 password=password,
-                                                 host=host,
-                                                 database=dbname,
-                                                 string_connect="")
+                user_mysql = data['user_mysql']
+            if password:
+                password_mysql = password
+            else:
+                password_mysql = data['password_mysql']
+            if dbname:
+                database_mysql = dbname
+            else:
+                database_mysql = data['database_mysql']
+            conn = database.create_connexion(user=user_mysql,
+                                             password=password_mysql,
+                                             host=host,
+                                             database=database_mysql,
+                                             string_connect="")
         else:
             database = Crate()
             conn = database.create_connexion(user='',
@@ -176,15 +314,20 @@ class SelectTest:
                                              database='',
                                              string_connect=host)
         times = []
+        times_total = []
         cursor = conn.cursor()
 
         for i in range(0, number_of_loops):
-            print i
-            time_start = time()
-            self.aux_selects_crate(cursor)
-            time_end = time()
-            times.append(time_end - time_start)
+            print "iteration " + str(i)
+            if database_name == 'crate':
+                t = self.aux_selects_sql(cursor, table_name, value_eq, value_neq, value_many, value_contains)
+            else:
+                t = self.aux_selects_sql(cursor, table_name, value_eq, value_neq, value_many, value_contains)
+            total_times = t['time_total']
+            times.append(t)
+            times_total.append(total_times)
         print times
+        print times_total
         # query10 = "SELECT ZRowIdent FROM BlobStore WHERE CONTAINS(ZBlob, 'Europe')"
         # cursor.execute(query10)
         # r = cursor.fetchall()
@@ -210,13 +353,19 @@ class SelectTest:
         print times
 
     # POSTGRES
-    def selects_postgres(self, string_connect, numbers_of_loop):
-        self.selects_sql('postgres', False, string_connect, 'postgresselects', numbers_of_loop)
+    def selects_postgres(self, host, port, name_results, number_of_loops, table_name, value_eq, value_neq, value_many,
+                         value_contains):
+        self.selects_sql('postgres', host, port, None, None, None, name_results, number_of_loops, table_name, value_eq,
+                         value_neq, value_many, value_contains)
 
     # MYSQL
-    def selects_mysql(self, host, numbers_of_loop):
-        self.selects_sql('mysql', False, host, 'mysqlbenchamrkkubernetes', numbers_of_loop)
+    def selects_mysql(self, host, port, user, password, dbname, name_results, number_of_loops, table_name, value_eq,
+                      value_neq, value_many, value_contains):
+        self.selects_sql('mysql', host, port, user, password, dbname, name_results, number_of_loops, table_name,
+                         value_eq, value_neq, value_many, value_contains)
 
     # CRATE
-    def selects_crate(self, host, name_results, numbers_of_loop):
-        self.selects_sql('crate', False, host, name_results, numbers_of_loop)
+    def selects_crate(self, host, port, name_results, number_of_loops, table_name, value_eq, value_neq, value_many,
+                      value_contains):
+        self.selects_sql('crate', host, port, None, None, None, name_results, number_of_loops, table_name, value_eq,
+                         value_neq, value_many, value_contains)

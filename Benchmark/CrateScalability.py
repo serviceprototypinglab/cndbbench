@@ -1,8 +1,7 @@
 import sys
 import threading
 from Crate import Crate
-from InsertTest import InsertTest
-from SelectTest import SelectTest
+
 from time import time
 import json
 
@@ -22,11 +21,23 @@ coll = data['coll']
 
 
 def insert_crate():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     ins = InsertTest(coll, coll)
     ins.insert_crate(host_no_cluster_crate, False)
 
 
 def select_crate_cluster_parallel_all_nodes():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     s = SelectTest()
     crate = Crate()
     conn = crate.create_connexion(None, None, None, None,
@@ -38,11 +49,23 @@ def select_crate_cluster_parallel_all_nodes():
 
 
 def select_crate_cluster_sequential():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     s = SelectTest()
-    s.selects_crate(host_cluster_crate_1, 'name_results', 100)
+    s.selects_crate(host_cluster_crate_1, None, 'name_results', 100)
 
 
 def select_crate_cluster_parallel_one_node():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     s = SelectTest()
     crate = Crate()
     conn = crate.create_connexion(None, None, None, None, string_connect=host_cluster_crate_2)
@@ -51,11 +74,23 @@ def select_crate_cluster_parallel_one_node():
 
 
 def select_crate_no_cluster_sequential():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     s = SelectTest()
-    s.selects_crate(host_no_cluster_crate, 'name_results', 100)
+    s.selects_crate(host_no_cluster_crate, None, 'name_results', 100)
 
 
 def select_crate_no_cluster_parallel():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     s = SelectTest()
     crate = Crate()
     conn = crate.create_connexion(None, None, None, None, string_connect=host_no_cluster_crate)
@@ -65,7 +100,7 @@ def select_crate_no_cluster_parallel():
 
 def select_test_1(s1, cursor, times):
     time_start = time()
-    s1.aux_selects_crate(cursor)
+    s1.aux_selects_sql(cursor)
     time_end = time()
     res_t = time_end - time_start
     times.append(res_t)

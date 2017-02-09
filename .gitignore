@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+*.pyc
+/Benchmark/.idea
+/sharedData/
+/results/
+/Benchmark/documentdb/benchmark/selects_document_alls.json
+/Benchmark/documentdb/.idea/

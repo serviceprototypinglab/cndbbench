@@ -1,0 +1,8 @@
+version: '2'
+services:
+  benchmark:
+    container_name: documentdbtest
+    image: documentdbtest
+    volumes:
+      - ./sharedData:/sharedData
+      - ./results:/results

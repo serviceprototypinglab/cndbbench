@@ -15,8 +15,9 @@ class SqlDb:
     def create_connexion(self, user, password, host, database, string_connect):
         pass
 
-    def create_database(self, connexion):
-        pass
+    def create_database(self, cursor, dbname):
+        string_create_database = 'CREATE DATABASE ' + dbname
+        cursor.execute(string_create_database)
 
     def delete_database(self, connexion):
         pass

@@ -2,20 +2,36 @@
 ## Overview
 
 This is a testbed in the context of the Cloud-Native Applications research initiative of the Service Prototyping Lab
-in Zurich University of Applied Sciences (https://blog.zhaw.ch/icclab/category/research-approach/themes/cloud-native-applications/).
-We go to compare different database systems using docker to check their viability for use in cloud-native applications. We will do different tests:
+in Zurich University of Applied Sciences
+(https://blog.zhaw.ch/icclab/category/research-approach/themes/cloud-native-applications/).
+We go to compare different database systems using docker to check their viability for use in
+cloud-native applications.
+
+We will do different tests:
 
 - Performance test
   - Inserts test
   - Selects test
 - Scalability test
 - Resilience test
+- Multi-tenant test
 
-The database systems that we compare are:
+You can use any of these database:
+
+- MongoDB
+- CouchDB
+- Crate
+- MySQL
+- Postgres
+
+Also, you can use compatible DBs with the previous one, e.g. Aurora with MySQL or DocumentDB with MongoDB.
+
+We have used the next configurations:
 
 - MongoDB local
 - MongoDB cloud (Kubernetes)
 - MongoDB cluster (5 nodes) using Kubernetes and docker
+- MongoDB in kubernetes with A,B, D and E multitenant options 
 - CouchDB local
 - CouchDB cloud (Kubernetes)
 - Crate.io local
@@ -23,15 +39,18 @@ The database systems that we compare are:
 - Crate.io cluster (5 nodes) using docker
 - PostgreSQL local
 - PostgreSQL cloud (Kubernetes)
+- PostgreSQL as a Service (Bluemix)
 - MySQL local
 - MySQL cloud (Kubernetes)
 - MySQL cloud (Amazon RDS)
-- Aurora
+- MySQL as a Service (Bluemix)
+- Aurora (AWS)
+- DocumentDB (Azure)
 
 ## How
 ### Containers
 
-We use 6 different containers:
+We use 11 different containers:
 
 1. MongoDB container: It is a simple container with the official image of 'mongo' in DockerHub.
      It is listening in the port 27017.
@@ -46,14 +65,18 @@ We use 6 different containers:
      It is listening in the port 5432.
 8. Postgres limit RAM container: It is the same that 7, but with a limit in the memory RAM. 
 9. MySQL container. It is a simple container with the official image of 'mysql' in DockerHub.
-     It is listening in the port 3306. We changed the configuration variable max_allowed_packets. We changed it to the maximum value.
+     It is listening in the port 3306. We changed the configuration variable max_allowed_packets.
+     We changed it to the maximum value.
 10. MySQL limit RAM container: It is the same that 9, but with a limit in the memory RAM. 
 11. Benchmark container. We use a Dockerfile for create this container.
-     From the python official image we add the folder Benchmark (logic of the application). And we add a command for run the code. 
+     From the python official image we add the folder Benchmark (logic of the application).
+     And we add a command for run the code. 
      This container has two volumes too. One is call 'sharedData' where is the dataset that we will use in our test.
      And the volume 'results' where we save the results of our test.
      For more information about the code, the data set or the results see below.
      
+Also, you have the option of run a database as a service and not the database container.
+
 ### Composition:
 
 We use docker-compose for:
@@ -66,6 +89,7 @@ We use docker-compose for:
 
 You can see the file docker-compose.yaml.
 Note: The configuration of this file is changing with the different tests.
+You have different options in the folder docker-compose-file.
 
 ## Data:
 
@@ -82,25 +106,28 @@ It is a description about the data set that we use:
       - inserts.json: It has the SQL insert statement. 
       (without the data. For get the data we will use the correct file JSON for each table.)
     
+You have different options for the dataset:
+    - Your own data. You must create the json files and configurate the selects test to adapt to the new data.
+    - Use the generic data. Using GenerateData.py you can generate data and decide about its size.
+    - Kendox data. It is a private data set that this benchmark supports.
+    
 ## Results
 
 The results are in the volume results. 
-There are two ways to show the results:
-   1. In JSON format. We will save all the measures in JSON files.
-   2. With graphics.
-      Using the results saved in JSON files we create graphics comparing the same test in different database.
-     
+We will save all the measures in JSON files.
+
 ## Logic
 
 In the Benchmark folder we have all the code. It is the logic of the benchmark container.
 The files inside the folder are:
 
 - config.json is the file where you can find the name of the tables or collections,
-    and all the configuration that you need for connect to tha database (host, port, user, password, dbname, ...)    
+    and also all the configuration that you need for connect to tha database (host, port, user, password, dbname, ...)
+    You must change the configuration for a good connexion with the database that you are using.
 - Databases.py:
     In the DocumentDb.py we have the methods for the usual functions that a document database do.
     In Mongo.py and Couch.py are implemented this methods.
-    We have the same for the SQL databases with Sqldb.py and Crate.py, Postgres.py, Mysqldb.py.    
+    We have the same for the SQL databases with SqlDb.py and Crate.py, Postgres.py, Mysqldb.py.    
 - InsertTest.py:
     In this code we measure the time for insert the data in each database.
     And we write the results in a JSON file.
@@ -119,8 +146,9 @@ The resilience test that we do here are:
     - Limit disk size.
     - Kill the container.           
   We provoke these faults when we are inserting data. We will do it, inserting data one per one or all together.     
-- Graphics.py  
-  It is for create the graphics with the results of the tests. 
+- MultiTenantTest.py:
+
+
 
 ## Tests
 ### Performance
@@ -142,9 +170,12 @@ The resilience test that we do here are:
           - Create a Aurora instance.
       - Cluster:
         - Mongo:
-          - It is a cluster in kubernetes. Follow this instructions for create one. (link)
+          - It is a cluster in kubernetes. 
+          Follow [this instructions](https://www.mongodb.com/blog/post/running-mongodb-as-a-microservice-with-docker-and-kubernetes)
+          for create one.  
         - Crate:
-          - It is a cluster using docker. Create a cluster with crate is very easy. You must start 5 docker crate containers.
+          - It is a cluster using docker. Create a cluster with crate is very easy.
+           You must start 5 docker crate containers.
     Check that you have the correct configuration in config.json. The corrects host, ports, ...     
     - Test.
     
@@ -167,7 +198,7 @@ The resilience test that we do here are:
     You can add more queries in the method if you want.
     - After
     
-    In the folder results is created a json file where you can find the times of the queries. 
+    In the folder results is created a json file where you can find the times of the queries.
 ### Scalability
 - Before
 
@@ -273,3 +304,12 @@ We can extends the project in different ways:
 2. Add more databases to compare.
 3. Add different selects queries. 
 4. Create updates queries.
+
+
+## Don't forget
+
+Script for data.
+Draw.
+Script for the user.
+User friendly.
+One command for default configuration. Just with docker-compose one.

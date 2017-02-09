@@ -1,8 +1,6 @@
 import threading
 from Couch import Couch
-from InsertTest import InsertTest
 from time import time
-from SelectTest import SelectTest
 import json
 
 with open('config.json') as data_file:
@@ -13,6 +11,12 @@ coll = data['coll']
 
 
 def insert_cluster():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     aux = InsertTest(coll, coll)
     aux.insert_couch(host_couch_scalability, False)
 
@@ -39,6 +43,12 @@ def threads_select_test(se, conn):
 
 
 def select_test_thread_cluster():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     s = SelectTest()
     couch = Couch()
     conn = couch.create_connexion(host_couch_scalability, None)

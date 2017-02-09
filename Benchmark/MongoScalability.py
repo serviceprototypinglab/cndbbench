@@ -26,6 +26,12 @@ def connect_cluster():
 
 
 def insert_cluster(c):
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     aux = InsertTest(coll, coll)
     aux.insert_mongo('', '', None, False, c)
 
@@ -52,6 +58,12 @@ def threads_select_test(se, db):
 
 
 def select_test_thread_cluster():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     s = SelectTest()
     c = connect_cluster()
     # print c.read_preference
@@ -60,6 +72,12 @@ def select_test_thread_cluster():
 
 
 def select_test_thread_host():
+    if data['arkisdata'] == 'true':
+        from InsertTestArkisData import InsertTest
+        from SelectTestArkisData import SelectTest
+    else:
+        from InsertTest import InsertTest
+        from SelectTest import SelectTest
     s = SelectTest()
     m = Mongo()
     c = m.create_connexion(host_no__mongo_cluster, port_no__mongo_cluster)

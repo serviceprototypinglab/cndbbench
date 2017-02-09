@@ -1,13 +1,11 @@
 version: '2'
 services:
-  postgres:
-    image: postgres
+  crate:
+    image: crate
     ports:
+      - "4200:4200"
+      - "4300:4300"
       - "5432:5432"
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
   benchmark:
     container_name: benchmark
     image: benchmark
@@ -15,6 +13,6 @@ services:
       - ./sharedData:/sharedData
       - ./results:/results
     depends_on:
-      - postgres
+      - crate
     links:
-      - postgres
+      - crate
