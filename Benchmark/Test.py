@@ -32,30 +32,8 @@ class Test:
                 json_data = []
         return json_data
 
-    def i_coll_database_mongo(self, coll, db_name, users):
-        with open('config.json') as data_file:
-            data = json.load(data_file)
-        mongo = Mongo()
-        host = data['host_multitenant']
-        port = int(data['port_multitenant'])
-        db_name = 'arkis'
-        number_tenants = data['number_tenants']
-        if users:
-            conn = mongo.create_connexion(host, port - 1)
-            db = mongo.create_database(conn, db_name)
-            json_data = self.read_data('sharedData', 'arkisEUsers')
-            mongo.insert_all_data(db['users'], json_data)
-        else:
-            for user in range(0, number_tenants):
-                print user
-                conn = mongo.create_connexion(host, port + user)
-                db = mongo.create_database(conn, db_name)
-                # for coll in self.collections:
-                # json_data = self.read_data('sharedData', coll)
-                json_data = self.read_data('sharedData', 'arkisE_E_user_' + str(user))
-                mongo.insert_all_data(db['documents'], json_data)
-
-    def create_full_index(self):
+    @staticmethod
+    def create_full_index():
         with open('config.json') as data_file1:
             data1 = json.load(data_file1)
         mongo = Mongo()
@@ -71,7 +49,6 @@ class Test:
             print "created full text index"
 
     def select_mongo(self):
-        s = SelectTest()
         host = self.data['host_mongo']
         port = self.data['port_mongo']
         conn = None
@@ -83,16 +60,33 @@ class Test:
         value_neq = self.data['value_neq']
         value_many = self.data['value_many']
         value_contains = self.data['value_contains']
+        s = SelectTest()
         s.selects_mongo(host, port, conn, name_file,
                         number_loops, db, collection,
                         value_eq, value_neq, value_many,
                         value_contains)
 
     def insert_mongo_one(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection,collection)
+        one = True
+        host = self.data['host_mongo']
+        port = self.data['port_mongo']
+        conn = None
+        name_file = 'insert_mongo_one'
+        db = 'arkis'
+        i.insert_mongo(host, port, db, one, conn, name_file)
 
     def insert_mongo(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection,collection)
+        one = False
+        host = self.data['host_mongo']
+        port = self.data['port_mongo']
+        conn = None
+        name_file = 'insert_mongo'
+        db = 'arkis'
+        i.insert_mongo(host, port, db, one, conn, name_file)
 
     def select_couch(self):
         pass

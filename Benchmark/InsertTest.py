@@ -59,7 +59,7 @@ class InsertTest:
         return json_data
 
     # MONGO
-    def insert_mongo(self, host, port, database, one, conn, number_user, user, option):
+    def insert_mongo(self, host, port, database, one, conn, name_test):
         # sleep(15)
         time_mongo_start = time()
         mongo = Mongo()
@@ -80,7 +80,7 @@ class InsertTest:
         # Create database
         try:
             create_database_start = time()
-            db_name = 'arkis'
+            db_name = ''
             if database:
                 db_name = database
             db = mongo.create_database(conn, db_name)
@@ -162,11 +162,8 @@ class InsertTest:
                 print "inserting all" + coll
                 json_data = self.read_data('sharedData', coll)
                 if json_data:
-                    if number_user:
-                        print "Readed"
-                        print len(json_data)
-                        insert_all_start = time()
-                        mongo.insert_all_data(db[coll], json_data)
+                    insert_all_start = time()
+                    mongo.insert_all_data(db[coll], json_data)
                     insert_all_end = time()
                     inserts_time_all[coll] = insert_all_end - insert_all_start
                     insert_all_data_time += (insert_all_end - insert_all_start)
@@ -216,7 +213,7 @@ class InsertTest:
                             'total_time': time_mongo}
 
             # Write results mongo
-            mongo.write_results(time_results, "inserts_mongo")
+            mongo.write_results(time_results, name_test)
 
             print "----------------------------------------------------------"
             print time_results
