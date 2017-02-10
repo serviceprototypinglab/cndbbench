@@ -3,6 +3,7 @@ from Mongo import Mongo
 from InsertTest import InsertTest
 from SelectTest import SelectTest
 import json
+import ResilienceTest
 
 
 class Test:
@@ -218,6 +219,8 @@ with open('config.json') as data_file:
     data = json.load(data_file)
     test_name = data['test_name']
 
+
+# Inserts ans selects test
 if test_name == 'select_mongo':
     print test_name
     t.select_mongo()
@@ -263,3 +266,26 @@ elif test_name == 'insert_mysql':
 elif test_name == 'insert_mysql_one':
     print test_name
     t.insert_mysql_one()
+# Scalability tests
+elif test_name == 'scalability_mongo':
+    print test_name
+elif test_name == 'scalability_couch':
+    print test_name
+elif test_name == 'scalability_crate':
+    print test_name
+elif test_name == 'scalability_postgres':
+    print test_name
+elif test_name == 'scalability_mysql':
+    print test_name
+# MultiTenant tests
+elif test_name == 'mt_mongo':
+    print test_name
+elif test_name == 'mt_couch':
+    print test_name
+elif test_name == 'mt_crate':
+    print test_name
+elif test_name == 'mt_postgres':
+    print test_name
+elif test_name == 'mt_mysql':
+    print test_name
+
