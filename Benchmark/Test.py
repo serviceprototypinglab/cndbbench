@@ -64,7 +64,7 @@ class Test:
 
     def insert_mongo_one(self):
         collection = self.data['collections']
-        i = InsertTest(collection,collection)
+        i = InsertTest(collection, collection)
         one = True
         host = self.data['host_mongo']
         port = self.data['port_mongo']
@@ -75,7 +75,7 @@ class Test:
 
     def insert_mongo(self):
         collection = self.data['collections']
-        i = InsertTest(collection,collection)
+        i = InsertTest(collection, collection)
         one = False
         host = self.data['host_mongo']
         port = self.data['port_mongo']
@@ -114,31 +114,104 @@ class Test:
         i.insert_couch(host, db, one, 'insert_couch')
 
     def select_crate(self):
-        pass
+        host = self.data['host_crate']
+        port = self.data['port_crate']
+        name_file = 'select_crate'
+        number_loops = self.data['number_loops']
+        collection = self.data['collections']
+        value_eq = self.data['value_eq']
+        value_neq = self.data['value_neq']
+        value_many = self.data['value_many']
+        value_contains = self.data['value_contains']
+        s = SelectTest()
+        s.selects_crate(host, port, name_file, number_loops, collection, value_eq, value_neq, value_many,
+                        value_contains)
 
     def insert_crate_one(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection, collection)
+        one = True
+        host = self.data['host_crate']
+        name_file = 'insert_crate_one'
+        i.insert_crate(host, one, name_file)
 
     def insert_crate(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection, collection)
+        one = False
+        host = self.data['host_crate']
+        name_file = 'insert_crate'
+        i.insert_crate(host, one, name_file)
 
     def select_postgres(self):
-        pass
+        host = self.data['host_postgres']
+        port = self.data['port_postgres']
+        name_file = 'select_postgres'
+        number_loops = self.data['number_loops']
+        collection = self.data['collections']
+        value_eq = self.data['value_eq']
+        value_neq = self.data['value_neq']
+        value_many = self.data['value_many']
+        value_contains = self.data['value_contains']
+        s = SelectTest()
+        s.selects_postgres(host, port, name_file, number_loops, collection, value_eq, value_neq, value_many,
+                           value_contains)
 
     def insert_postgres_one(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection, collection)
+        one = True
+        string_connect_postgres = self.data['string_connect_postgres']
+        name_file = 'insert_postgres_one'
+        i.insert_postgres(string_connect_postgres, one, name_file)
 
     def insert_postgres(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection, collection)
+        one = False
+        string_connect_postgres = self.data['string_connect_postgres']
+        name_file = 'insert_postgres'
+        i.insert_postgres(string_connect_postgres, one, name_file)
 
     def select_mysql(self):
-        pass
+        host = self.data['host_mysql']
+        user = self.data['user_mysql']
+        password = self.data['pass_mysql']
+        port = self.data['port_mysql']
+        dbname = self.data['dbname_mysql']
+        name_file = 'select_mysql'
+        number_loops = self.data['number_loops']
+        collection = self.data['collections']
+        value_eq = self.data['value_eq']
+        value_neq = self.data['value_neq']
+        value_many = self.data['value_many']
+        value_contains = self.data['value_contains']
+        s = SelectTest()
+        s.selects_mysql(host, port, user, password, dbname, name_file, number_loops,
+                        collection, value_eq, value_neq, value_many, value_contains)
 
     def insert_mysql_one(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection, collection)
+        one = True
+        host = self.data['host_mysql']
+        user = self.data['user_mysql']
+        password = self.data['pass_mysql']
+        dbname = self.data['dbname_mysql']
+        name_file = 'insert_mysql_one'
+        i.insert_mysql(host, user, password, dbname, one, name_file)
 
     def insert_mysql(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection, collection)
+        one = False
+        host = self.data['host_mysql']
+        user = self.data['user_mysql']
+        password = self.data['pass_mysql']
+        dbname = self.data['dbname_mysql']
+        name_file = 'insert_mysql'
+        i.insert_mysql(host, user, password, dbname, one, name_file)
+
 
 t = Test()
 with open('config.json') as data_file:

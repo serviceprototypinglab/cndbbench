@@ -169,7 +169,7 @@ class InsertTest:
                     insert_all_data_time += (insert_all_end - insert_all_start)
                     if coll == 'BlobStore':
                         print "creating full text index"
-                        #db.BlobStore.create_index([('blob', pymongo.TEXT)])
+                        # db.BlobStore.create_index([('blob', pymongo.TEXT)])
             inserts_time_all['total'] = insert_all_data_time
         except Exception, e:
             print e
@@ -272,7 +272,6 @@ class InsertTest:
             print e
             print collection_name
             print "create a database couch problem"
-
 
         print "--------------------------------------------"
 
@@ -448,7 +447,7 @@ class InsertTest:
         print "End inserting"
 
     # POSTGRES
-    def insert_postgres(self, string_connect, one):
+    def insert_postgres(self, string_connect, one, name_file):
         time_postgres_start = time()
         postgres = Postgres()
         # Create connexion
@@ -568,7 +567,7 @@ class InsertTest:
             insert_all_data_time = 0
             for table_name in self.tables:
                 print "inserting all" + table_name
-                json_data = self.read_data('sharedData',table_name)
+                json_data = self.read_data('sharedData', table_name)
                 if json_data:
                     query_insert = queries_insert['postgres'][table_name]
                     insert_all_start = time()
@@ -638,17 +637,17 @@ class InsertTest:
             try:
                 # Results postgres
                 time_results = {'create_connexion_time': create_connexion_time,
-                                    'close_connexion_time': close_connexion_time,
-                                    'create_database_time': create_database_time,
-                                    'create_table_time': create_table_time,
-                                    'inserts_time_all': inserts_time_all,
-                                    'inserts_time_one': inserts_time_one,
-                                    'delete_table_time': delete_table_time,
-                                    'size': size,
-                                    'total_time': time_postgres}
+                                'close_connexion_time': close_connexion_time,
+                                'create_database_time': create_database_time,
+                                'create_table_time': create_table_time,
+                                'inserts_time_all': inserts_time_all,
+                                'inserts_time_one': inserts_time_one,
+                                'delete_table_time': delete_table_time,
+                                'size': size,
+                                'total_time': time_postgres}
 
-                    # Write results postgres
-                postgres.write_results(time_results, "inserts_postgres")
+                # Write results postgres
+                postgres.write_results(time_results, name_file)
 
                 print "----------------------------------------------------------"
                 print time_results
@@ -658,8 +657,16 @@ class InsertTest:
         print "End inserting"
 
     # MYSQL
-    def insert_mysql(self, host, user, password, dbname, one):
+    def insert_mysql(self, host, user, password, dbname, one, name):
         # sleep(10)
+        create_connexion_time = -1
+        close_connexion_time = -1
+        create_database_time = -1
+        create_table_time = -1
+        inserts_time_all = -1
+        inserts_time_one = -1
+        delete_table_time = -1
+        time_mysql = -1
         time_mysql_start = time()
         mysqldb = Mysqldb()
         # Create connexion
@@ -845,8 +852,6 @@ class InsertTest:
 
         print "---------------------------------------------------------------"
 
-
-
         # # Stats
         # try:
         #     size = mysqldb.get_size(cursor, "")
@@ -854,45 +859,44 @@ class InsertTest:
         #     print e
         #     print "get stats mysql problem"
         #
-        # # Close connexion
-        # try:
-        #     close_connexion_time_start = time()
-        #     mysqldb.close_connexion(conn)
-        #     close_connexion_time_end = time()
-        #     close_connexion_time = close_connexion_time_end - close_connexion_time_start
-        # except Exception, e:
-        #     close_connexion_time = 0
-        #     print e
-        #     print "Problem with close connexion"
+        # Close connexion
+        try:
+            close_connexion_time_start = time()
+            mysqldb.close_connexion(conn)
+            close_connexion_time_end = time()
+            close_connexion_time = close_connexion_time_end - close_connexion_time_start
+        except Exception, e:
+            close_connexion_time = 0
+            print e
+            print "Problem with close connexion"
         #
-        # time_mysql_end = time()
-        # time_mysql = time_mysql_end - time_mysql_start
+        time_mysql_end = time()
+        time_mysql = time_mysql_end - time_mysql_start
         #
-        # try:
-        #     # Results mysql
-        #     time_results = {'create_connexion_time': create_connexion_time,
-        #                     'close_connexion_time': close_connexion_time,
-        #                     'create_database_time': create_database_time,
-        #                     'create_table_time': create_table_time,
-        #                     'inserts_time_all': inserts_time_all,
-        #                     'inserts_time_one': inserts_time_one,
-        #                     'delete_table_time': delete_table_time,
-        #                     'size': size,
-        #                     'total_time': time_mysql}
-        #
-        #     # Write results mysql
-        #     mysqldb.write_results(time_results, "inserts_mysql")
+        try:
+            # Results mysql
+            time_results = {'create_connexion_time': create_connexion_time,
+                            'close_connexion_time': close_connexion_time,
+                            'create_database_time': create_database_time,
+                            'create_table_time': create_table_time,
+                            'inserts_time_all': inserts_time_all,
+                            'inserts_time_one': inserts_time_one,
+                            'delete_table_time': delete_table_time,
+                            'total_time': time_mysql}
+            #
+            #     # Write results mysql
+            mysqldb.write_results(time_results, name)
         #
         #     print "----------------------------------------------------------"
         #     print time_results
-        # except Exception, e:
-        #     print e
-        #     print "Error time results"
+        except Exception, e:
+            print e
+            print "Error time results"
 
         print "End inserting"
 
     # CRATE
-    def insert_crate(self, host, one):
+    def insert_crate(self, host, one, name_file):
         print "WAIT 60 SECONDS"
         sleep(30)
         print "START"
@@ -963,7 +967,7 @@ class InsertTest:
                     json_data = self.read_data('sharedData', table_name)[:100]
                     if json_data:
                         json_example = json_data[0]
-                        query_insert = 'INSERT INTO tableexample ('
+                        query_insert = 'INSERT INTO documents ('
                         for k in json_example:
                             query_insert += k + ","
                         query_insert = query_insert[:len(query_insert) - 1] + ") " + "VALUES ("
@@ -1115,7 +1119,7 @@ class InsertTest:
                             'total_time': time_crate}
 
             # Write results crate
-            crate_sql.write_results(time_results, "inserts_crate")
+            crate_sql.write_results(time_results, name_file)
 
             print "----------------------------------------------------------"
             print time_results
@@ -1123,4 +1127,3 @@ class InsertTest:
             print e
             print "Error time results"
         print "End inserting"
-
