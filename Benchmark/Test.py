@@ -1,9 +1,5 @@
 import pymongo
 from Mongo import Mongo
-from Couch import Couch
-from Crate import Crate
-from Postgres import Postgres
-from Mysqldb import Mysqldb
 from InsertTest import InsertTest
 from SelectTest import SelectTest
 import json
@@ -54,7 +50,7 @@ class Test:
         conn = None
         name_file = 'select_mongo'
         number_loops = self.data['number_loops']
-        db = 'arkis'
+        db = self.data['database']
         collection = self.data['collections']
         value_eq = self.data['value_eq']
         value_neq = self.data['value_neq']
@@ -74,7 +70,7 @@ class Test:
         port = self.data['port_mongo']
         conn = None
         name_file = 'insert_mongo_one'
-        db = 'arkis'
+        db = self.data['database']
         i.insert_mongo(host, port, db, one, conn, name_file)
 
     def insert_mongo(self):
@@ -89,13 +85,33 @@ class Test:
         i.insert_mongo(host, port, db, one, conn, name_file)
 
     def select_couch(self):
-        pass
+        host = self.data['host_couch']
+        name_file = 'select_couch'
+        number_loops = self.data['number_loops']
+        collection = self.data['collections']
+        value_eq = self.data['value_eq']
+        value_neq = self.data['value_neq']
+        value_many = self.data['value_many']
+        value_contains = self.data['value_contains']
+        s = SelectTest()
+        s.selects_couch(host, number_loops, collection, value_eq, value_neq, value_many,
+                        value_contains, name_file)
 
     def insert_couch_one(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection, collection)
+        one = True
+        host = self.data['host_couch']
+        db = self.data['database']
+        i.insert_couch(host, db, one, 'insert_couch_one')
 
     def insert_couch(self):
-        pass
+        collection = self.data['collections']
+        i = InsertTest(collection, collection)
+        one = False
+        host = self.data['host_couch']
+        db = self.data['database']
+        i.insert_couch(host, db, one, 'insert_couch')
 
     def select_crate(self):
         pass

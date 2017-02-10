@@ -220,7 +220,7 @@ class InsertTest:
         print "End inserting"
 
     # COUCHDB
-    def insert_couch(self, host, one):
+    def insert_couch(self, host, db, one, name_test):
         create_connexion_time = -1
         create_database_time = -1
         create_table_time = -1
@@ -438,7 +438,7 @@ class InsertTest:
                             'total_time': time_couch}
 
             # Write results couch
-            couch.write_results(time_results, "inserts_couch")
+            couch.write_results(time_results, name_test)
 
             print "--------------------------------------------"
 

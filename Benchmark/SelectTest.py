@@ -81,7 +81,7 @@ class SelectTest:
         print times
         # todo save the results
         conn.close()
-        # Write results postgres
+        # Write results mongo
         try:
             f = open("/results/" + name_file + ".json", "w")
             json.dump(times, f)
@@ -170,7 +170,7 @@ class SelectTest:
                         'time_total': time_total}
         return time_results
 
-    def selects_couch(self, host, number_loops, collection, value_eq, value_neq, value_many, value_contains):
+    def selects_couch(self, host, number_loops, collection, value_eq, value_neq, value_many, value_contains, name_file):
         couch = Couch()
         conn = couch.create_connexion(host, None)
         times = []
@@ -179,7 +179,14 @@ class SelectTest:
             t = self.aux_selects_couch(conn, collection, value_eq, value_neq, value_many, value_contains)
             times.append(t)
 
-        print times
+        # Write results postgres
+        try:
+            f = open("/results/" + name_file + ".json", "w")
+            json.dump(times, f)
+            f.close()
+        except Exception, e:
+            print e
+            print "error saving results in postgres.json"
         #  search full text
         # query_full_text(db)
 
