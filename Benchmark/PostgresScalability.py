@@ -3,6 +3,7 @@ import sys
 from Postgres import Postgres
 from time import time
 from time import sleep
+from SelectTest import SelectTest
 import json
 with open('config.json') as data_file:
     data = json.load(data_file)
@@ -16,10 +17,6 @@ string_connect_postgres_scalability = data['string_connect_postgres_scalability'
 def select_test_1(times):
     p = Postgres()
     conn1 = p.create_connexion(None, None, None, None, string_connect_postgres_scalability)
-    if data['arkisdata'] == 'true':
-        from SelectTestArkisData import SelectTest
-    else:
-        from SelectTest import SelectTest
     s1 = SelectTest()
     cursor1 = conn1.cursor()
     time_start = time()

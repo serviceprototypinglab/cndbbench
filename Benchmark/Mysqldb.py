@@ -14,7 +14,6 @@ class Mysqldb(SqlDb):
         else:
             return mysql.connector.connect(user=user, password=password, host=host)
 
-
     def get_size(self, cursor, db):
         query_size = "SELECT Round(Sum(data_length + index_length) / 1024 / 1024, 1) " \
                      "FROM information_schema.tables GROUP BY table_schema"

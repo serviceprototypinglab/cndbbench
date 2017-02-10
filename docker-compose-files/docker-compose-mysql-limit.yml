@@ -6,7 +6,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: database
+      MYSQL_DATABASE: arkis
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     mem_limit: 100m

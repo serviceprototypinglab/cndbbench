@@ -80,7 +80,7 @@ class InsertTest:
         # Create database
         try:
             create_database_start = time()
-            db_name = 'dbexample'
+            db_name = 'arkis'
             if database:
                 db_name = database
             db = mongo.create_database(conn, db_name)

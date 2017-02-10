@@ -5,3 +5,5 @@
 /results/
 /Benchmark/documentdb/benchmark/selects_document_alls.json
 /Benchmark/documentdb/.idea/
+Benchmark/documentdb/results/
+Benchmark/documentdb/sharedData/

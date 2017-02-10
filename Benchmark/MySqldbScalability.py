@@ -1,10 +1,10 @@
 import threading
 import sys
 from Mysqldb import Mysqldb
-from SelectTest import SelectTest
 from time import time
 from time import sleep
 import json
+from SelectTest import SelectTest
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -26,10 +26,6 @@ def select_test_1(times):
                                    host=host,
                                    database=database,
                                    string_connect="")
-    if data['arkisdata'] == 'true':
-        from SelectTestArkisData import SelectTest
-    else:
-        from SelectTest import SelectTest
     s1 = SelectTest()
     cursor1 = conn1.cursor()
     time_start = time()

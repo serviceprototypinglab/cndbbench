@@ -1,4 +1,4 @@
-{"general": {"example": "INSERT INTO documents (tenant_option, title, tenant, user, name, other_id, path, blob, number) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"},
-"mysql": {"example": "INSERT INTO documents (tenant_option, title, tenant, user, name, other_id, path, blob, number) VALUES ( %(tenant_option)s, %(title)s, %(tenant)s, %(user)s, %(name)s, %(other_id)s, %(path)s, %(name)s, %(blob)s, %(number)s )"},
-"postgres": {"example": "INSERT INTO documents (tenant_option, title, tenant, user, name, other_id, path, blob, number) VALUES ( %(tenant_option)s, %(title)s, %(tenant)s, %(user)s, %(name)s, %(other_id)s, %(path)s, %(name)s, %(blob)s, %(number)s )"},
-"crate": {"example": "INSERT INTO documents (tenant_option, title, tenant, user, user, name, other_id, path, blob, number) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"}}
+{"general": {"documents": "INSERT INTO documents (tenant_option, title, tenant, user, name, other_id, path, blob, number) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"},
+"mysql": {"documents": "INSERT INTO documents (tenant_option, title, tenant, user, name, other_id, path, blob, number) VALUES ( %(tenant_option)s, %(title)s, %(tenant)s, %(user)s, %(name)s, %(other_id)s, %(path)s, %(name)s, %(blob)s, %(number)s )"},
+"postgres": {"documents": "INSERT INTO documents (tenant_option, title, tenant, user, name, other_id, path, blob, number) VALUES ( %(tenant_option)s, %(title)s, %(tenant)s, %(user)s, %(name)s, %(other_id)s, %(path)s, %(name)s, %(blob)s, %(number)s )"},
+"crate": {"documents": "INSERT INTO documents (tenant_option, title, tenant, user, user, name, other_id, path, blob, number) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"}}
