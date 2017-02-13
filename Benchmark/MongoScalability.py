@@ -21,19 +21,17 @@ mongo_replica_set = data['mongo_replica_set']
 
 
 def connect_cluster():
-    return MongoClient(host=[host_mongo_1, host_mongo_2, host_mongo_3, host_mongo_4], replicaset=mongo_replica_set)
+    return MongoClient(host=[host_mongo_1, host_mongo_2, host_mongo_3, host_mongo_4],
+                       replicaset=mongo_replica_set)
     # readPreference='secondaryPreferred')
 
 
 def insert_cluster(c):
-    if data['arkisdata'] == 'true':
-        from InsertTestArkisData import InsertTest
-        from SelectTestArkisData import SelectTest
-    else:
-        from InsertTest import InsertTest
-        from SelectTest import SelectTest
+    one = False
+    name_file = 'insert_mongo_cluster'
+    db = data['database']
     aux = InsertTest(coll, coll)
-    aux.insert_mongo('', '', None, False, c)
+    aux.insert_mongo(None, None, db, one, c, name_file)
 
 
 def select_test_1(s1, db, times):
@@ -58,30 +56,19 @@ def threads_select_test(se, db):
 
 
 def select_test_thread_cluster():
-    if data['arkisdata'] == 'true':
-        from InsertTestArkisData import InsertTest
-        from SelectTestArkisData import SelectTest
-    else:
-        from InsertTest import InsertTest
-        from SelectTest import SelectTest
+
     s = SelectTest()
     c = connect_cluster()
     # print c.read_preference
-    db1 = c.dbexample
+    db1 = c.arkis
     threads_select_test(s, db1)
 
 
 def select_test_thread_host():
-    if data['arkisdata'] == 'true':
-        from InsertTestArkisData import InsertTest
-        from SelectTestArkisData import SelectTest
-    else:
-        from InsertTest import InsertTest
-        from SelectTest import SelectTest
     s = SelectTest()
     m = Mongo()
     c = m.create_connexion(host_no__mongo_cluster, port_no__mongo_cluster)
-    db1 = c.dbexample
+    db1 = c.arkis
     threads_select_test(s, db1)
 
 # select_test_thread_host()

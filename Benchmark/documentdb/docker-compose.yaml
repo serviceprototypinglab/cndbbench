@@ -2,7 +2,7 @@ version: '2'
 services:
   benchmark:
     container_name: documentdbtest
-    image: documentdbtest
+    image: chumbo/documentdbtest:1.0
     volumes:
       - ./sharedData:/sharedData
       - ./results:/results

@@ -9,12 +9,13 @@ with open('config.json') as data_file:
     data = json.load(data_file)
 
 host_couch_scalability = data['host_couch_scalability']
-coll = data['coll']
+coll = data['collections']
+dbname = data['database']
 
 
 def insert_cluster():
     aux = InsertTest(coll, coll)
-    aux.insert_couch(host_couch_scalability, False)
+    aux.insert_couch(host_couch_scalability, dbname, False, 'inserts_scalability_couch')
 
 
 def select_test_1(s1, conn, times):

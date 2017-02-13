@@ -23,7 +23,7 @@ coll = data['coll']
 
 def insert_crate():
     ins = InsertTest(coll, coll)
-    ins.insert_crate(host_no_cluster_crate, False)
+    ins.insert_crate(host_no_cluster_crate, False, 'insert_crate_scalability')
 
 
 def select_crate_cluster_parallel_all_nodes():
@@ -32,14 +32,21 @@ def select_crate_cluster_parallel_all_nodes():
     conn = crate.create_connexion(None, None, None, None,
                                   string_connect=[host_cluster_crate_1, host_cluster_crate_2, host_cluster_crate_3,
                                                   host_cluster_crate_4])
-    # print conn.client._active_servers
     cursor = conn.cursor()
     threads_select_test(s, cursor)
 
 
 def select_crate_cluster_sequential():
+    name_file = 'select_crate_cluster_sequential'
+    number_loops = data['number_loops']
+    collection = data['collections']
+    value_eq = data['value_eq']
+    value_neq = data['value_neq']
+    value_many = data['value_many']
+    value_contains = data['value_contains']
     s = SelectTest()
-    s.selects_crate(host_cluster_crate_1, None, 'name_results', 100)
+    s.selects_crate(host_cluster_crate_1, None, name_file, number_loops, collection, value_eq, value_neq, value_many,
+                    value_contains)
 
 
 def select_crate_cluster_parallel_one_node():
@@ -51,8 +58,16 @@ def select_crate_cluster_parallel_one_node():
 
 
 def select_crate_no_cluster_sequential():
+    name_file = 'select_crate_no_cluster_sequential'
+    number_loops = data['number_loops']
+    collection = data['collections']
+    value_eq = data['value_eq']
+    value_neq = data['value_neq']
+    value_many = data['value_many']
+    value_contains = data['value_contains']
     s = SelectTest()
-    s.selects_crate(host_no_cluster_crate, None, 'name_results', 100)
+    s.selects_crate(host_no_cluster_crate, None, name_file, number_loops, collection, value_eq, value_neq, value_many,
+                    value_contains)
 
 
 def select_crate_no_cluster_parallel():

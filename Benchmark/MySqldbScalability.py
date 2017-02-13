@@ -29,7 +29,12 @@ def select_test_1(times):
     s1 = SelectTest()
     cursor1 = conn1.cursor()
     time_start = time()
-    s1.aux_selects_sql(cursor1)
+    collection = data['collections']
+    value_eq = data['value_eq']
+    value_neq = data['value_neq']
+    value_many = data['value_many']
+    value_contains = data['value_contains']
+    s1.aux_selects_sql(cursor1, collection, value_eq, value_neq, value_many, value_contains)
     time_end = time()
     res_t = time_end - time_start
     times.append(res_t)
@@ -55,5 +60,5 @@ def threads_select_test():
 # i = InsertTest(coll, coll)
 # i.insert_mysql('localhost',user,password,database,False)
 # threads_select_test()
-s = SelectTest()
+# s = SelectTest()
 # s.selects_mysql('localhost', 100)
