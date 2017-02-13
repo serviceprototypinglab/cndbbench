@@ -77,8 +77,8 @@ def read_data(folder_name, name):
 
 
 def get_count(name):
-    data = read_data('results', name)
-    return data['count']
+    data1 = read_data('results', name)
+    return data1['count']
 
 
 # MONGO
@@ -105,7 +105,7 @@ def mongo_test(name_collection, name_test, type_insert, type_test):
     mongo.create_collection(database, name_collection)
 
     # GET DATA TO INSERT
-    json_data = read_data('sharedData', 'documents')
+    json_data = read_data('sharedData/data', 'documents')
     count = 0
 
     # INSERT FIRST 1000
@@ -151,7 +151,7 @@ def mongo_test(name_collection, name_test, type_insert, type_test):
                     count += 1
                     if count % 10000 == 0:
                         print count
-                print "Inserting with succes !!!!!!!!!!"
+                print "Inserting with success !!!!!!!!!!"
         except Exception, e:
             print count
             print e
@@ -273,7 +273,7 @@ def couch_test(name_collection, name_test, type_insert, type_test):
     # couch.create_collection(database, name_collection)
 
     # GET DATA TO INSERT
-    json_data = read_data('sharedData', 'documents')
+    json_data = read_data('sharedData/data', 'documents')
     count = 0
 
     # INSERT FIRST 1000
@@ -366,7 +366,7 @@ def couch_disk_size_test1():
     # couch.create_collection(database, name_collection)
 
     # GET DATA TO INSERT
-    json_data = read_data('sharedData', 'documents')
+    json_data = read_data('sharedData/data', 'documents')
     count = 0
     while True:
         try:
@@ -378,7 +378,7 @@ def couch_disk_size_test1():
                 except Exception, e:
                     print e
                     print j
-                    conn = couch.create_connexion()
+                    conn = couch.create_connexion(conn, 'documents')
             print "Inserting with succes !!!!!!!!!!"
         except Exception, e2:
             print e2
@@ -455,10 +455,10 @@ def sql_test(name_test, type_insert, type_test, commit, db):
         database = Postgres()
         # CONNECT
 
-        conn = database.create_connexion(user='user',
-                                         password='password',
+        conn = database.create_connexion(user='postgres',
+                                         password='postgres',
                                          host='host',
-                                         database='database',
+                                         database='arkis',
                                          string_connect=host_resilience_postgres)
     elif db == 'crate':
         database = Crate()
@@ -490,11 +490,7 @@ def sql_test(name_test, type_insert, type_test, commit, db):
     database.create_table(cursor, queries_create[db]['documents'])
 
     # GET DATA TO INSERT
-    aux_data = read_data('sharedData', 'documents')
-    json_data = []
-    for j in aux_data:
-        j['ZBlob'] = j['ZBlob'].encode('unicode_escape')
-        json_data.append(j)
+    json_data = read_data('sharedData/data', 'documents')
     count = 0
 
     # INSERT FIRST 1000
@@ -702,7 +698,7 @@ def sql_disk_size_test1(db):
     database.create_table(cursor, queries_create[db]['documents'])
 
     # GET DATA TO INSERT
-    aux_data = read_data('sharedData', 'documents')
+    aux_data = read_data('sharedData/data', 'documents')
     json_data = []
     for j in aux_data:
         j['ZBlob'] = j['ZBlob'].encode('unicode_escape')

@@ -3,7 +3,6 @@ from time import time
 from Mongo import Mongo
 
 
-
 class InsertTest:
     def __init__(self, tables, collections):
         with open('config.json') as data_file:
@@ -22,7 +21,6 @@ class InsertTest:
     def delete_table(cursor1, table_name):
         query_delete = 'DROP TABLE IF EXISTS ' + table_name
         cursor1.execute(query_delete)
-
 
     @staticmethod
     def read_data(folder_name, name):
@@ -66,7 +64,7 @@ class InsertTest:
         # Create database
         try:
             create_database_start = time()
-            db_name = 'dbexample'
+            db_name = 'arkis'
             if database:
                 db_name = database
             db = mongo.create_database(conn, db_name)
