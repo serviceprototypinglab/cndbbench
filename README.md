@@ -14,7 +14,6 @@ We will do different tests:
   - Selects test
 - Scalability test
 - Resilience test
-- Multi-tenant test
 
 You can use any of these database:
 
@@ -109,7 +108,6 @@ It is a description about the data set that we use:
 You have different options for the dataset:
     - Your own data. You must create the json files and configurate the selects test to adapt to the new data.
     - Use the generic data. Using GenerateData.py you can generate data and decide about its size.
-    - Kendox data. It is a private data set that this benchmark supports.
     
 ## Results
 
@@ -121,9 +119,16 @@ We will save all the measures in JSON files.
 In the Benchmark folder we have all the code. It is the logic of the benchmark container.
 The files inside the folder are:
 
-- config.json is the file where you can find the name of the tables or collections,
+- config.json:
+    - It is the file where you can find the name of the tables or collections,
     and also all the configuration that you need for connect to tha database (host, port, user, password, dbname, ...)
-    You must change the configuration for a good connexion with the database that you are using.
+    or run some test.
+    - You must change the configuration for a good connexion with the database that you are using.
+    - You can choose also the test that you want run changing test_name.
+    The options are:
+        - {insert_database, insert_database_one, select_database}
+    where database in
+        - {mongo, couch, crate, postgres, mysql}
 - Databases.py:
     In the DocumentDb.py we have the methods for the usual functions that a document database do.
     In Mongo.py and Couch.py are implemented this methods.
@@ -134,10 +139,7 @@ The files inside the folder are:
     We insert the data one per one or all together. 
     Also we measure the time for create or delete the table or collections.
 - SelectTest.py:
-    In this code we measure the time for some selects queries.
-- Joins.py:
-    We measure the time for a join query in some sql databases and the query that produce the same result in the 
-    documents database.     
+    In this code we measure the time for some selects queries.     
 - DatabaseScalability.py:
     We run the selects test (one loop) 100 times at the same time using threads.    
 - ResilienceTest.py:
@@ -145,8 +147,7 @@ The resilience test that we do here are:
     - Limit RAM memory.
     - Limit disk size.
     - Kill the container.           
-  We provoke these faults when we are inserting data. We will do it, inserting data one per one or all together.     
-- MultiTenantTest.py:
+We provoke these faults when we are inserting data. We will do it, inserting data one per one or all together.     
 
 
 
@@ -176,10 +177,9 @@ The resilience test that we do here are:
         - Crate:
           - It is a cluster using docker. Create a cluster with crate is very easy.
            You must start 5 docker crate containers.
-    Check that you have the correct configuration in config.json. The corrects host, ports, ...     
+    Check that you have the correct configuration in config.json. The corrects host, ports, ... and the correct test_name.   
     - Test.
-    
-      In Test.py add the methods insert_{database}. Where database in {mongo,crate,mysql,couch,postgres}
+        Run docker-compose up.
     - After:
 
       In the folder results is created a json file where you have the times for:
@@ -193,9 +193,7 @@ The resilience test that we do here are:
     
     Run the insert test.
     - Test
-    
-    In test.py add the method selects_{database}. Where database in {mongo, crate, mysql, couch, postgres}.
-    You can add more queries in the method if you want.
+        Change the test_name, rebuild the image and run docker-compose up again.
     - After
     
     In the folder results is created a json file where you can find the times of the queries.
@@ -284,12 +282,13 @@ Afterwards, run
 
 1. Git clone the repository to your directory.
 2. Open the terminal and go to your directory.
-3. Execute the  next line:
+3. In the file config.json change the test_name file and the configuration for the database that you want to test.
+4. Execute the  next line:
     - docker build -t benchmark ./Benchmark/
     
 We this command we create the image benchmark using our Dockerfile.
 And now we have all the images, the officials for the databases and the benchmark image.
-4. Execute the next line:
+5. Execute the next line:
     - docker-compose up 
     
 We this command we start of the containers using the definition in docker-compose.yml.
@@ -304,12 +303,7 @@ We can extends the project in different ways:
 2. Add more databases to compare.
 3. Add different selects queries. 
 4. Create updates queries.
+5. Multi-tenants test
+6. More user friendly.
 
 
-## Don't forget
-
-Script for data.
-Draw.
-Script for the user.
-User friendly.
-One command for default configuration. Just with docker-compose one.

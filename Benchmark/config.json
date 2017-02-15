@@ -1,4 +1,5 @@
 {
+	"test_name": "select_mongo",
     "coll": ["documents, users"],
 	"sql_tables": ["documents"],
 	"collections": ["documents"],
@@ -6,7 +7,6 @@
 	"number_tenants": 10,
   	"coll_names_multitenant": ["documents", "users"],
 	"arkis_data": "true",
-	"test_name": "select_mongo",
 	"generate_data_mt_option": "F",
 	"generate_data_number_tenants": 10,
 	"generate_data_number_rows_per_tenants": 100,
