@@ -144,7 +144,7 @@ class InsertTest:
         try:
             insert_all_data_time = 0
             for coll in self.collections:
-                print("inserting all" + coll)
+                print("inserting all " + coll)
                 json_data = self.read_data('sharedData', coll)
                 if json_data:
                     len_json_data = len(json_data)
@@ -161,7 +161,7 @@ class InsertTest:
                             ok = False
                         else:
                             count3 = count1 + count2
-                        aux = json_data[count1:count3 - 1]
+                        aux = json_data[count1:count3]
                         count1 = count3
                         if aux and len(aux) > 0:
                             try:
@@ -173,18 +173,20 @@ class InsertTest:
                                 print("Insert all mongo problem")
                         else:
                             ok = False
+                        print("Number of documents in db: ")
+                        print(db[coll].count())
                     # conn = couch.create_connexion(host)
                     insert_all_end = time()
-                    #insert_all_start = time()
-                    #mongo.insert_all_data(db[coll], json_data)
-                    #insert_all_end = time()
+                    # insert_all_start = time()
+                    # mongo.insert_all_data(db[coll], json_data)
+                    # insert_all_end = time()
                     inserts_time_all[coll] = insert_all_end - insert_all_start
                     insert_all_data_time += (insert_all_end - insert_all_start)
+
             inserts_time_all['total'] = insert_all_data_time
+
         except Exception:
-            pass
             print("Problem collection inserting all")
-            print(coll)
 
         # Close connexion
         try:
@@ -198,6 +200,23 @@ class InsertTest:
 
         time_mongo_end = time()
         time_mongo = time_mongo_end - time_mongo_start
+        try:
+            time_results = {'create_connexion_time': create_connexion_time,
+                            'close_connexion_time': close_connexion_time,
+                            'create_database_time': create_database_time,
+                            'create_table_time': create_table_time,
+                            'inserts_time_all': inserts_time_all,
+                            'inserts_time_one': inserts_time_one,
+                            'delete_table_time': delete_table_time,
+                            'stats': 0,
+                            'size': 0,
+                            'total_time': time_mongo}
+            f = open("/results/no_one_inserts_documentdb.json", "w")
+            json.dump(time_results, f)
+            f.close()
+        except Exception:
+            print("error saving results in documentdb.json")
+
         if one:
             # Results mongo
             time_results = {'create_connexion_time': create_connexion_time,

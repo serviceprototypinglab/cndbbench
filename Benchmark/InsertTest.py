@@ -8,7 +8,6 @@ from Couch import Couch
 from Postgres import Postgres
 from Mysqldb import Mysqldb
 from Crate import Crate
-import ijson
 import logging
 import pymongo
 
@@ -34,10 +33,11 @@ class InsertTest:
 
     @staticmethod
     def read_big_json():
-        with open('/sharedData/big_json.json', 'r') as f:
-            for j in ijson.items(f, 'item'):
-                print j
-        return ""
+        pass
+        # with open('/sharedData/big_json.json', 'r') as f:
+        #    for j in ijson.items(f, 'item'):
+        #        print j
+        # return ""
         # with open('/sharedData/big_json.json', 'r') as f:
         #    for line in f:
         #        return json.loads(line)[:1000]
@@ -61,6 +61,12 @@ class InsertTest:
     # MONGO
     def insert_mongo(self, host, port, database, one, conn, name_test):
         # sleep(15)
+        inserts_time_one = 0
+        delete_table_time = 0
+        create_database_time = 0
+        create_table_time = 0
+        close_connexion_time = 0
+        create_connexion_time = 0
         time_mongo_start = time()
         mongo = Mongo()
         # Create connexion
@@ -199,6 +205,24 @@ class InsertTest:
 
         time_mongo_end = time()
         time_mongo = time_mongo_end - time_mongo_start
+
+        try:
+            time_results = {'create_connexion_time': create_connexion_time,
+                            'close_connexion_time': close_connexion_time,
+                            'create_database_time': create_database_time,
+                            'create_table_time': create_table_time,
+                            'inserts_time_all': inserts_time_all,
+                            'inserts_time_one': inserts_time_one,
+                            'delete_table_time': delete_table_time,
+                            'stats': 0,
+                            'size': 0,
+                            'total_time': time_mongo}
+            f = open("/results/insert_mongo.json", "w")
+            json.dump(time_results, f)
+            f.close()
+        except Exception:
+            print("error saving results in documentdb.json")
+
         if one:
             # Results mongo
             time_results = {'create_connexion_time': create_connexion_time,

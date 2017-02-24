@@ -39,6 +39,7 @@ def delete_table(cursor1, table_name):
     query_delete = 'DROP TABLE IF EXISTS ' + table_name
     cursor1.execute(query_delete)
 
+
 def kill_container(name, delay):
     try:
         pass
@@ -388,7 +389,6 @@ def couch_disk_size_test1():
             except Exception, e1:
                 print e1
                 print "Problem closing connexion"
-
 
 
 def couch_disk_size_test2():

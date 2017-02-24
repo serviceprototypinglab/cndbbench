@@ -4,7 +4,6 @@ from pymongo import CursorType
 from Mongo import Mongo
 
 
-
 class SelectTest:
     # INIT
     def __init__(self):
@@ -21,10 +20,11 @@ class SelectTest:
         # time_order_number_eq =  cursor.explain()['executionStats']['executionTimeMillis']
 
         # Search order number not equal
+        eq_val = r.count()
         time_order_number_neq_start = time()
         r = db[collection].find({"number": {"$ne": value_neq}}, {"other_id": 1, "_id": 0},
                                 cursor_type=CursorType.EXHAUST)
-        print(r.count())
+        no_eq_val = r.count()
         time_order_number_neq_end = time()
         time_order_number_neq = time_order_number_neq_end - time_order_number_neq_start
         # time_order_number_neq = cursor.explain()['executionStats']['executionTimeMillis']
@@ -33,7 +33,7 @@ class SelectTest:
         time_many_files_start = time()
         r = db[collection].find({"tenant_option": value_many}, {"other_id": 1, "_id": 0},
                                 cursor_type=CursorType.EXHAUST)
-        print(r.count())
+        many_val = r.count()
         time_many_files_end = time()
         time_many_files = time_many_files_end - time_many_files_start
         # time_many_files = cursor.explain()['executionStats']['executionTimeMillis']
@@ -43,12 +43,12 @@ class SelectTest:
         time_contains_start = time()
         r = db[collection].find({"blob": {"$regex": value_contains}}, {"other_id": 1, "_id": 0},
                                 cursor_type=CursorType.EXHAUST)
-        print(r.count())
+        contain_val = r.count()
         time_contains_end = time()
         time_contains = time_contains_end - time_contains_start
         # time_contains = cursor.explain()['executionStats']['executionTimeMillis']
-        time_contains_end = time()
-        time_contains = time_contains_end - time_contains_start
+        # time_contains_end = time()
+        # time_contains = time_contains_end - time_contains_start
         time_total_end = time()
         time_total = time_total_end - time_total_start
         time_results = {'time_order_number_eq': time_order_number_eq,
@@ -56,19 +56,14 @@ class SelectTest:
                         'time_many_files': time_many_files,
                         'time_order_number_neq': time_order_number_neq,
                         'time_total': time_total}
-        return time_results
+        results_json = {'eq_val': eq_val, 'no_eq_val': no_eq_val, 'many_val': many_val, 'contain_val': contain_val}
+        # print(time_results)
+        print(results_json)
+        return results_json
 
     def selects_mongo(self, host, port, conn, name_file, number_loops, db, collection, value_eq, value_neq, value_many,
                       value_contains):
-        mongo = Mongo()
-        if db:
-            pass
-        else:
-            if conn:
-                pass
-            else:
-                conn = mongo.create_connexion(host, port)
-            db = conn.dbexample
+        db = conn[db]
         times = []
         print("connected")
         for i in range(0, number_loops):
@@ -84,7 +79,7 @@ class SelectTest:
             json.dump(times, f)
             f.close()
         except Exception:
-            print("error saving results in postgres.json")
+            print("error saving results in documentdb.json")
             #
             # print "----------------------------------------------------------"
             # print times

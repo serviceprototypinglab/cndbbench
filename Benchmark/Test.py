@@ -50,11 +50,11 @@ class Test:
         port = self.data['port_mongo']
         conn = None
         name_file = 'select_mongo'
-        number_loops = self.data['number_loops']
+        number_loops = int(self.data['number_loops'])
         db = self.data['database']
-        collection = self.data['collections']
-        value_eq = self.data['value_eq']
-        value_neq = self.data['value_neq']
+        collection = self.data['collections'][0]
+        value_eq = int(self.data['value_eq'])
+        value_neq = int(self.data['value_neq'])
         value_many = self.data['value_many']
         value_contains = self.data['value_contains']
         s = SelectTest()

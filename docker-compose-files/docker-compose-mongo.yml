@@ -6,7 +6,7 @@ services:
       - "27017:27017"
   benchmark:
     container_name: benchmark
-    image: benchmark
+    image: chumbo/benchmarklocalinsertmongo:1.0
     volumes:
       - ./sharedData:/sharedData
       - ./results:/results

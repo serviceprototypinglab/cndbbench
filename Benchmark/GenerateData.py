@@ -129,6 +129,9 @@ def create_blobs_json(number_tenants, rows_per_tenant, multi_tenant_option, pref
             for j in range(0, rows_per_tenant):
                 aux_json = create_aux_json(prefix_name, multi_tenant_option, count, user)
                 res_json.append(aux_json)
+
+                if count % 100 == 0:
+                    print count
                 count += 1
         end_path = '../sharedData/data/documents.json'
         write_results(res_json, end_path)
@@ -154,7 +157,7 @@ rows_per_tenant1 = data['generate_data_number_tenants']
 number_tenants1 = data['generate_data_number_rows_per_tenants']
 prefix1 = data['generate_data_prefix_multitenant']
 
-create_tenants_json(number_tenants1, multi_tenant_option1,  prefix1)
+#create_tenants_json(number_tenants1, multi_tenant_option1,  prefix1)
 create_blobs_json(number_tenants1, rows_per_tenant1, multi_tenant_option1, prefix1)
 
 print "end"

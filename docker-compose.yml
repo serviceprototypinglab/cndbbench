@@ -1,18 +1,16 @@
 version: '2'
 services:
-  crate:
-    image: crate
+  mongo:
+    image: mongo
     ports:
-      - "4200:4200"
-      - "4300:4300"
-      - "5432:5432"
+      - "27017:27017"
   benchmark:
     container_name: benchmark
-    image: benchmark
+    image: chumbo/benchmarklocalselectmongo:1.0
     volumes:
       - ./sharedData:/sharedData
       - ./results:/results
     depends_on:
-      - crate
+      - mongo
     links:
-      - crate
+      - mongo

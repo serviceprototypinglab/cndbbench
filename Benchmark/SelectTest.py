@@ -22,7 +22,7 @@ class SelectTest:
         time_order_number_eq_end = time()
         time_order_number_eq = time_order_number_eq_end - time_order_number_eq_start
         # time_order_number_eq =  cursor.explain()['executionStats']['executionTimeMillis']
-
+        print r.count()
         # Search order number not equal
         time_order_number_neq_start = time()
         r = db[collection].find({"number": {"$ne": value_neq}}, {"other_id": 1, "_id": 0},
@@ -64,14 +64,14 @@ class SelectTest:
     def selects_mongo(self, host, port, conn, name_file, number_loops, db, collection, value_eq, value_neq, value_many,
                       value_contains):
         mongo = Mongo()
-        if db:
+
+        if conn:
             pass
         else:
-            if conn:
-                pass
-            else:
-                conn = mongo.create_connexion(host, port)
-            db = conn.dbexample
+            conn = mongo.create_connexion(host, port)
+        db = conn[db]
+        print conn
+        print db
         times = []
         print "connected"
         for i in range(0, number_loops):
