@@ -23,19 +23,19 @@ You can use any of these database:
 - MySQL
 - Postgres
 
-Also, you can use compatible DBs with the previous one, e.g. Aurora with MySQL or DocumentDB with MongoDB.
+Also, you can use compatible interfaces with the previous one, e.g. Aurora with MySQL or DocumentDB with MongoDB.
 
 We have used the next configurations:
 
 - MongoDB local
 - MongoDB cloud (Kubernetes)
-- MongoDB cluster (5 nodes) using Kubernetes and docker
+- MongoDB cluster (5 or 3 nodes) using Kubernetes and docker
 - MongoDB in kubernetes with A,B, D and E multitenant options 
 - CouchDB local
 - CouchDB cloud (Kubernetes)
 - Crate.io local
 - Crate.io cloud (Kubernetes)
-- Crate.io cluster (5 nodes) using docker
+- Crate.io cluster (5 or 3 nodes) using docker
 - PostgreSQL local
 - PostgreSQL cloud (Kubernetes)
 - PostgreSQL as a Service (Bluemix)
@@ -78,6 +78,7 @@ Also, you have the option of run a database as a service and not the database co
 
 ### Composition:
 
+#### docker-compose
 We use docker-compose for:
 -   Define the images 
 -   Define the ports of the containers
@@ -90,12 +91,21 @@ You can see the file docker-compose.yaml.
 Note: The configuration of this file is changing with the different tests.
 You have different options in the folder docker-compose-file.
 
+#### Kubernetes
+
+One option for run these test with cloud database is using Kubernetes.
+You can run the benchmark container or the database
+container or both in your own Kubernetes cluster in local or in the cloud.
+
+1. For create the yaml files (K8s blueprint), you can use the tool kompose with the docker-compose.yml 
+2. For the docker images you can use the repository dockerhub. There are some examples in dockerhub/chumbo.
+
 ## Data:
 
 It is a description about the data set that we use:
    - The data that we go to use is in the volume sharedData.
    - The format of the files is JSON.
-   - Each file is a array with JSON objects and it represents one table or collection.
+   - Each file is an array with JSON objects and it represents one table or collection.
    - For the tables with foreign keys:
        - we have a JSON file with the join of the tables 
        - we have one JSON file for each table. 
@@ -106,7 +116,7 @@ It is a description about the data set that we use:
       (without the data. For get the data we will use the correct file JSON for each table.)
     
 You have different options for the dataset:
-    - Your own data. You must create the json files and configurate the selects test to adapt to the new data.
+    - Your own data. You must create the json files and configure the selects test to adapt to the new data.
     - Use the generic data. Using GenerateData.py you can generate data and decide about its size.
     
 ## Results
@@ -124,7 +134,7 @@ The files inside the folder are:
     and also all the configuration that you need for connect to tha database (host, port, user, password, dbname, ...)
     or run some test.
     - You must change the configuration for a good connexion with the database that you are using.
-    - You can choose also the test that you want run changing test_name.
+    - You can choose also the test that you want run, changing test_name.
     The options are:
         - {insert_database, insert_database_one, select_database}
     where database in
@@ -229,7 +239,6 @@ You can see the results in the folder results.
     - Before
     
         - Local database:
-        
           We need use the correct docker-compose.yml:
            - For MongoDB: docker-compose-mongo-limit.yml
            - For CouchDB: docker-compose-couch-limit.yml
