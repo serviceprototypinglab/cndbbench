@@ -4,6 +4,7 @@ from InsertTest import InsertTest
 from SelectTest import SelectTest
 import json
 import ResilienceTest
+import os
 
 
 class Test:
@@ -12,6 +13,10 @@ class Test:
         with open('config.json') as data_file1:
             data1 = json.load(data_file1)
         self.data = data1
+        for var in os.environ:
+            if var in self.data:
+                print "config override", var, self.data[var], "=>", os.environ[var]
+                self.data[var] = type(self.data[var])(os.environ[var])
 
     @staticmethod
     def read_data(folder_name, name):

@@ -4,10 +4,10 @@
 This is a testbed in the context of the Cloud-Native Applications research initiative of the Service Prototyping Lab
 in Zurich University of Applied Sciences
 (https://blog.zhaw.ch/icclab/category/research-approach/themes/cloud-native-applications/).
-We go to compare different database systems using docker to check their viability for use in
+It is used to compare different self-managed database systems and provider-managed services to check their viability for use in
 cloud-native applications.
 
-We will do different tests:
+The testbed will run different tests:
 
 - Performance test
   - Inserts test
@@ -23,9 +23,9 @@ You can use any of these database:
 - MySQL
 - Postgres
 
-Also, you can use compatible interfaces with the previous one, e.g. Aurora with MySQL or DocumentDB with MongoDB.
+Also, you can use DBaaS with interfaces compatible with the previous databases, e.g. Aurora with MySQL or CosmosDB with MongoDB.
 
-We have used the next configurations:
+We have used the following configurations in our research:
 
 - MongoDB local
 - MongoDB cloud (Kubernetes)
@@ -44,12 +44,12 @@ We have used the next configurations:
 - MySQL cloud (Amazon RDS)
 - MySQL as a Service (Bluemix)
 - Aurora (AWS)
-- DocumentDB (Azure)
+- CosmosDB, formerly DocumentDB (Azure)
 
 ## How
 ### Containers
 
-We use 11 different containers:
+We use 11 different containers, 10 for the database systems and 1 for the benchmark itself:
 
 1. MongoDB container: It is a simple container with the official image of 'mongo' in DockerHub.
      It is listening in the port 27017.
@@ -66,10 +66,10 @@ We use 11 different containers:
 9. MySQL container. It is a simple container with the official image of 'mysql' in DockerHub.
      It is listening in the port 3306. We changed the configuration variable max_allowed_packets.
      We changed it to the maximum value.
-10. MySQL limit RAM container: It is the same that 9, but with a limit in the memory RAM. 
+10. MySQL limit RAM container: It is the same that 9, but with a limit in the memory RAM.
 11. Benchmark container. We use a Dockerfile for create this container.
      From the python official image we add the folder Benchmark (logic of the application).
-     And we add a command for run the code. 
+     And we add a command for run the code.
      This container has two volumes too. One is call 'sharedData' where is the dataset that we will use in our test.
      And the volume 'results' where we save the results of our test.
      For more information about the code, the data set or the results see below.
@@ -292,17 +292,18 @@ Afterwards, run
 1. Git clone the repository to your directory.
 2. Open the terminal and go to your directory.
 3. In the file config.json change the test_name file and the configuration for the database that you want to test.
-4. Execute the  next line:
+   (Note: This is no longer strictly necessary as all values can be overridden with configuration variables.)
+4. Execute the next line:
     - docker build -t benchmark ./Benchmark/
-    
-We this command we create the image benchmark using our Dockerfile.
-And now we have all the images, the officials for the databases and the benchmark image.
-5. Execute the next line:
+   With this command we create the benchmark container image using our Dockerfile.
+   And now we have all the images, the officials for the databases and the benchmark image.
+5. Test the benchmark container standalone:
+    - docker run -ti --env host_mongo=127.0.0.1 --env port_mongo=8080 benchmark
+6. Execute the next line to set up the entire testbed:
     - docker-compose up 
-    
-We this command we start of the containers using the definition in docker-compose.yml.
+   With this command we start of the containers using the definition in docker-compose.yml.
 
-Note: The step 3 is only necessary the first time for create the image benchmark.
+Note: The step 3 is only necessary the first time for creating the benchmark container image.
 
 ## Next steps
 
@@ -314,5 +315,3 @@ We can extends the project in different ways:
 4. Create updates queries.
 5. Multi-tenants test
 6. More user friendly.
-
-
