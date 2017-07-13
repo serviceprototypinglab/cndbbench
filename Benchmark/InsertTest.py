@@ -140,10 +140,7 @@ class InsertTest:
                         insert_one_data_time += (insert_one_end - insert_one_start)
                 inserts_time_one['total'] = insert_one_data_time
             except Exception, e:
-                print e
-                print coll
-                print j
-                print "Insert one mongo problem"
+                print "Insert one mongo problem in", coll, ":", e
 
             print "----------------------------------------------------------"
 
@@ -155,8 +152,8 @@ class InsertTest:
                 delete_table_end = time()
                 delete_table_time = delete_table_end - delete_table_start
             except Exception, e:
-                print e
-                print "Deleting mongo problem"
+                print "Deleting mongo problem", e
+                return
 
             print "-------------------------------------------------------------"
 
@@ -178,9 +175,9 @@ class InsertTest:
                         # db.BlobStore.create_index([('blob', pymongo.TEXT)])
             inserts_time_all['total'] = insert_all_data_time
         except Exception, e:
-            print e
-            print coll
-            print "Insert all mongo problem"
+            print "Insert all mongo problem in", coll, ":", e
+            print "Hint: try setting generate_data_number_rows_per_tenants=70 or increase RUs"
+            return
 
         print "----------------------------------------------------------"
 
@@ -190,8 +187,8 @@ class InsertTest:
                 stats = mongo.get_stats(db)
                 size = mongo.get_size(db)
             except Exception, e:
-                print e
-                print "get stats mongo problem"
+                print "get stats mongo problem:", e
+                return
 
         # Close connexion
         try:
