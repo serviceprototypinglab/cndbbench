@@ -1,6 +1,7 @@
 import random
 import json
 from loremipsum import generate_paragraphs
+import os
 
 # Options of multi tenants
 # A: Shared DBMS, Shared database, shared schema, shared table/collection
@@ -8,7 +9,7 @@ from loremipsum import generate_paragraphs
 # C: Shared DBMS, Shared database, one schema per tenant
 # D: Shared DBMS, one database per tenant
 # E: One DBMS per tenant
-#  F: No multitenant options (by default)
+# F: No multitenant options (by default)
 
 
 def write_results(results, name):
@@ -42,9 +43,9 @@ def create_tenants_json(number_tenants, multi_tenant_option, prefix):
             or multi_tenant_option == 'C' \
             or multi_tenant_option == 'D' \
             or multi_tenant_option == 'E':
-        write_results(res_json, '../sharedData/data/' + prefix + 'Users.json')
+        write_results(res_json, documentpath + '/' + prefix + 'Users.json')
     else:
-        write_results(res_json, '../sharedData/data/users.json')
+        write_results(res_json, documentpath + '/users.json')
     return res_json
 
 
@@ -85,7 +86,7 @@ def create_blobs_json(number_tenants, rows_per_tenant, multi_tenant_option, pref
                 aux_json = create_aux_json(prefix_name, multi_tenant_option, count, user)
                 res_json.append(aux_json)
                 count += 1
-        end_path = '../sharedData/data/' + prefix_name + '_' + multi_tenant_option + '.json'
+        end_path = documentpath + '/' + prefix_name + '_' + multi_tenant_option + '.json'
         write_results(res_json, end_path)
     elif multi_tenant_option == 'B':
         for user in range(0, number_tenants):
@@ -94,7 +95,7 @@ def create_blobs_json(number_tenants, rows_per_tenant, multi_tenant_option, pref
                 aux_json = create_aux_json(prefix_name, multi_tenant_option, count, user)
                 res_json.append(aux_json)
                 count += 1
-            end_path = '../sharedData/data/' + prefix_name + '_' + multi_tenant_option + '_user_' + str(user) + '.json'
+            end_path = documentpath + '/' + prefix_name + '_' + multi_tenant_option + '_user_' + str(user) + '.json'
             write_results(res_json, end_path)
     elif multi_tenant_option == 'C':
         for user in range(0, number_tenants):
@@ -103,7 +104,7 @@ def create_blobs_json(number_tenants, rows_per_tenant, multi_tenant_option, pref
                 aux_json = create_aux_json(prefix_name, multi_tenant_option, count, user)
                 res_json.append(aux_json)
                 count += 1
-            end_path = '../sharedData/data/' + prefix_name + '_' + multi_tenant_option + '_user_' + str(user) + '.json'
+            end_path = documentpath + '/' + prefix_name + '_' + multi_tenant_option + '_user_' + str(user) + '.json'
             write_results(res_json, end_path)
     elif multi_tenant_option == 'D':
         for user in range(0, number_tenants):
@@ -112,7 +113,7 @@ def create_blobs_json(number_tenants, rows_per_tenant, multi_tenant_option, pref
                 aux_json = create_aux_json(prefix_name, multi_tenant_option, count, user)
                 res_json.append(aux_json)
                 count += 1
-            end_path = '../sharedData/data/' + prefix_name + '_' + multi_tenant_option + '_user_' + str(user) + '.json'
+            end_path = documentpath + '/' + prefix_name + '_' + multi_tenant_option + '_user_' + str(user) + '.json'
             write_results(res_json, end_path)
     elif multi_tenant_option == 'E':
         for user in range(0, number_tenants):
@@ -121,7 +122,7 @@ def create_blobs_json(number_tenants, rows_per_tenant, multi_tenant_option, pref
                 aux_json = create_aux_json(prefix_name, multi_tenant_option, count, user)
                 res_json.append(aux_json)
                 count += 1
-            end_path = '../sharedData/data/' + prefix_name + '_' + multi_tenant_option + '_user_' + str(user) + '.json'
+            end_path = documentpath + '/' + prefix_name + '_' + multi_tenant_option + '_user_' + str(user) + '.json'
             write_results(res_json, end_path)
     else:
         res_json = []
@@ -133,7 +134,7 @@ def create_blobs_json(number_tenants, rows_per_tenant, multi_tenant_option, pref
                 if count % 100 == 0:
                     print count
                 count += 1
-        end_path = '../sharedData/data/documents.json'
+        end_path = documentpath + '/documents.json'
         write_results(res_json, end_path)
     return res_json
 
@@ -145,9 +146,11 @@ multi_tenant_option_D = 'D'
 multi_tenant_option_E = 'E'
 
 number_tenants_10 = 10
-rows_per_tenant_100 = 100
 
-print "start"
+documentpath = "../sharedData/data"
+
+if not os.path.isdir(documentpath):
+    os.mkdir(documentpath)
 
 with open('config.json') as data_file:
     data = json.load(data_file)
@@ -157,7 +160,10 @@ rows_per_tenant1 = data['generate_data_number_tenants']
 number_tenants1 = data['generate_data_number_rows_per_tenants']
 prefix1 = data['generate_data_prefix_multitenant']
 
-#create_tenants_json(number_tenants1, multi_tenant_option1,  prefix1)
+print "start"
+print "generating %i records for multi-tenancy mode %s" % (number_tenants1 * rows_per_tenant1, multi_tenant_option1)
+
 create_blobs_json(number_tenants1, rows_per_tenant1, multi_tenant_option1, prefix1)
 
 print "end"
+print "documents created in", documentpath
