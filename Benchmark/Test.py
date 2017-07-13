@@ -15,7 +15,7 @@ class Test:
         self.data = data1
         for var in os.environ:
             if var in self.data:
-                print "config override", var, self.data[var], "=>", os.environ[var]
+                print "> config override", var, self.data[var], "=>", os.environ[var]
                 self.data[var] = type(self.data[var])(os.environ[var])
 
     @staticmethod
@@ -77,7 +77,7 @@ class Test:
         conn = None
         name_file = 'insert_mongo_one'
         db = self.data['database']
-        i.insert_mongo(host, port, db, one, conn, name_file)
+        i.insert_mongo(host, port, db, one, conn, name_file, self.data["user"], self.data["password"])
 
     def insert_mongo(self):
         collection = self.data['collections']
@@ -220,77 +220,61 @@ class Test:
 
 
 t = Test()
-with open('config.json') as data_file:
-    data = json.load(data_file)
-    test_name = data['test_name']
+test_name = t.data['test_name']
+print "Running test", test_name
 
 
 # Inserts ans selects test
 if test_name == 'select_mongo':
-    print test_name
     t.select_mongo()
 elif test_name == 'insert_mongo':
-    print test_name
     t.insert_mongo()
 elif test_name == 'insert_mongo_one':
-    print test_name
     t.insert_mongo_one()
 elif test_name == 'select_couch':
-    print test_name
     t.select_couch()
 elif test_name == 'insert_couch':
-    print test_name
     t.insert_couch()
 elif test_name == 'insert_couch_one':
-    print test_name
     t.insert_couch_one()
 elif test_name == 'select_crate':
-    print test_name
     t.select_crate()
 elif test_name == 'insert_crate':
-    print test_name
     t.insert_crate()
 elif test_name == 'insert_crate_one':
-    print test_name
     t.insert_crate_one()
 elif test_name == 'select_postgres':
-    print test_name
     t.select_postgres()
 elif test_name == 'insert_postgres':
-    print test_name
     t.insert_postgres()
 elif test_name == 'insert_postgres_one':
-    print test_name
     t.insert_postgres_one()
 elif test_name == 'select_mysql':
-    print test_name
     t.select_mysql()
 elif test_name == 'insert_mysql':
-    print test_name
     t.insert_mysql()
 elif test_name == 'insert_mysql_one':
-    print test_name
     t.insert_mysql_one()
 # Scalability tests
 elif test_name == 'scalability_mongo':
-    print test_name
+    pass
 elif test_name == 'scalability_couch':
-    print test_name
+    pass
 elif test_name == 'scalability_crate':
-    print test_name
+    pass
 elif test_name == 'scalability_postgres':
-    print test_name
+    pass
 elif test_name == 'scalability_mysql':
-    print test_name
+    pass
 # MultiTenant tests
 elif test_name == 'mt_mongo':
-    print test_name
+    pass
 elif test_name == 'mt_couch':
-    print test_name
+    pass
 elif test_name == 'mt_crate':
-    print test_name
+    pass
 elif test_name == 'mt_postgres':
-    print test_name
+    pass
 elif test_name == 'mt_mysql':
-    print test_name
+    pass
 

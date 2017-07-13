@@ -59,7 +59,7 @@ class InsertTest:
         return json_data
 
     # MONGO
-    def insert_mongo(self, host, port, database, one, conn, name_test):
+    def insert_mongo(self, host, port, database, one, conn, name_test, user, pwd):
         # sleep(15)
         inserts_time_one = 0
         delete_table_time = 0
@@ -75,7 +75,7 @@ class InsertTest:
             if conn:
                 pass
             else:
-                conn = mongo.create_connexion(host, port)
+                conn = mongo.create_connexion(host, port, user, pwd)
             create_connexion_end = time()
             create_connexion_time = create_connexion_end - create_connexion_start
             print "connected"

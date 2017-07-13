@@ -4,10 +4,15 @@ from DocumentDb import DocumentDb
 
 class Mongo(DocumentDb):
 
-    def create_connexion(self, host, port):
+    def create_connexion(self, host, port, user=None, pwd=None):
+        if user and pwd:
+            url = "mongodb://%s:%s@%s:%i" % (user, pwd, host, port)
+            client = MongoClient(url, ssl=True)
+            return client
+
         # return MongoClient('mongo', 27017)
         if port:
-            return MongoClient(host, port)
+            return MongoClient(host, port, ssl=True)
         else:
             return MongoClient(host)
 
