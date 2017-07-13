@@ -9,7 +9,7 @@
 	"arkis_data": "true",
 	"generate_data_mt_option": "F",
 	"generate_data_number_tenants": 10,
-	"generate_data_number_rows_per_tenants": 70,
+	"generate_data_number_rows_per_tenants": 8,
   	"user": "user",
 	"password": "password",
 	"host": "localhost",

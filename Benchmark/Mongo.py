@@ -7,7 +7,8 @@ class Mongo(DocumentDb):
     def create_connexion(self, host, port, user=None, pwd=None):
         if user and pwd:
             url = "mongodb://%s:%s@%s:%i" % (user, pwd, host, port)
-            client = MongoClient(url, ssl=True)
+            #client = MongoClient(url, ssl=True)
+            client = MongoClient(url, ssl=True, connectTimeoutMS=999999, serverSelectionTimeoutMS=999999)
             return client
 
         # return MongoClient('mongo', 27017)

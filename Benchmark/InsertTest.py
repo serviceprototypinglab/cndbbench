@@ -128,6 +128,7 @@ class InsertTest:
                     print "inserting one" + coll
                     collection = db[coll]
                     json_data = self.read_data('sharedData', coll)[:100]
+                    print "- len:", len(json_data)
                     if json_data:
                         insert_one_start = time()
                         for j in json_data:
@@ -164,6 +165,7 @@ class InsertTest:
             for coll in self.collections:
                 print "inserting all" + coll
                 json_data = self.read_data('sharedData', coll)
+                print "- len:", len(json_data)
                 if json_data:
                     insert_all_start = time()
                     mongo.insert_all_data(db[coll], json_data)
@@ -177,6 +179,7 @@ class InsertTest:
         except Exception, e:
             print "Insert all mongo problem in", coll, ":", e
             print "Hint: try setting generate_data_number_rows_per_tenants=70 or increase RUs"
+            print "Timeout after:", time() - insert_all_start, "s"
             return
 
         print "----------------------------------------------------------"
