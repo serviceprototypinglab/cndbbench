@@ -2,6 +2,7 @@
 *.pyc
 /Benchmark/.idea
 /sharedData/data/
+/sharedData/*.json
 /results/
 /Benchmark/documentdb/benchmark/selects_document_alls.json
 /Benchmark/documentdb/.idea/
